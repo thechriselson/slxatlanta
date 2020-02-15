@@ -168,6 +168,7 @@ function opacity1(element) {
 }
 
 function lstItem(item, x) {
+	console.log(item);
 	let contentCon = item.querySelector(".res-lst-content-con");
 	let thmbImg = item.querySelector(".res-lst-thumb-div");
 	let expDiv = item.querySelector(".res-lst-expand-div");
