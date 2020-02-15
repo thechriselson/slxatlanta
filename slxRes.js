@@ -124,10 +124,13 @@ function computeGalMaxH() {
 function filterCheck(item, attrs) {
 	for(let i = 1; i < attrs.length; i++) {
 		if(dataReady = true) {
+			let checkArr = [];
 			for(let j = 0; j < attrs[i].length; j++) {
-				if(attrs[i][j] == Number(actvFltrs[i-1])) {item.dataset.filter = "false"}
-				else {item.dataset.filter = "true"; break}
+				if(attrs[i][j] == Number(actvFltrs[i-1])) {checkArr.push(false)}
+				else {checkArr.push(true)}
 			}
+			if(checkArr.includes(true)) {item.dataset.filter = "true"}
+			else {item.dataset.filter = "false"}
 		}
 		else {
 			if(attrs[i] == Number(actvFltrs[i-1])) {item.dataset.filter = "false"}
