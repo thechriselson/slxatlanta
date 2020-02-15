@@ -132,6 +132,7 @@ function filterCheck(item, attrs) {
 			console.log(checkArr);
 			if(checkArr.includes(true)) {item.dataset.filter = "true"}
 			else {item.dataset.filter = "false"}
+			console.log(item.dataset.filter);
 		}
 		else {
 			if(attrs[i] == Number(actvFltrs[i-1])) {item.dataset.filter = "false"}
