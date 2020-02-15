@@ -47,6 +47,7 @@ xhr.addEventListener('readystatechange', function() {
 				if(jsonUnitTypes[i].Room[j].Comment == "Bedroom") {
 					beds.push(jsonUnitTypes[i].Room[j].Count)
 				}
+				if(jsonUnitTypes[i].Name.includes("Studio")) {beds[0] = 0}
 			}
 			unitTypes.push([[jsonUnitTypes[i].Name.toUpperCase()], beds, [], [], []]);
 		}
@@ -102,7 +103,7 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice")]; // Add move-in-date
-const actvFltrs = [4];
+const actvFltrs = [];
 
 // Upgrade to filter activated
 const g2LTrgr = document.getElementById("resG2LTrigger");
@@ -122,21 +123,28 @@ function computeGalMaxH() {
 }
 
 function filterCheck(item, attrs) {
-	for(let i = 1; i < attrs.length; i++) {
-		if(dataReady = true) {
-			let checkArr = [];
-			for(let j = 0; j < attrs[i].length; j++) {
-				if(attrs[i][j] == Number(actvFltrs[i-1])) {checkArr.push(false)}
-				else {checkArr.push(true)}
+	if(dataReady == true) {
+		console.log(actvFltrs);
+		let checkArr = [[], [], [], []];
+		for(let i = 1; i < attrs.length; i++) {
+			if(attrs[i].length == 0 || actvFltrs[i-1] == undefined || actvFltrs[i-1].length == 0) {checkArr[i-1].push(false); continue}
+			let actvFltr = Number(actvFltrs[i-1]);
+			for(let j = 0; j < attrs[i].length; j ++) {
+				if(attrs[i][j] != actvFltr) {checkArr[i-1].push(true)}
+				else {checkArr[i-1].push(false)}
 			}
 			console.log(checkArr);
-			if(checkArr.includes(true)) {item.dataset.filter = "true"}
-			else {item.dataset.filter = "false"}
-			console.log(item.dataset.filter);
 		}
-		else {
-			if(attrs[i] == Number(actvFltrs[i-1])) {item.dataset.filter = "false"}
-			else {item.dataset.filter = "true"; break}
+		for(let i = 0; i < checkArr.length; i++) {
+			if(!checkArr[i].includes(false)) {item.dataset.filter = "true"; break}
+			else {item.dataset.filter = "false"}
+		}
+	}
+	else {
+		for(let i = 1; i < attrs.length; i++) {
+			let actvFltr = Number(actvFltrs[i-1]);
+			if(attrs[i] != actvFltr) {item.dataset.filter = "true"; break}
+			else {item.dataset.filter = "false"}
 		}
 	}
 	if(item.dataset.filter == "true") {lstItem(item, 0)}
@@ -168,7 +176,6 @@ function opacity1(element) {
 }
 
 function lstItem(item, x) {
-	console.log(item);
 	let contentCon = item.querySelector(".res-lst-content-con");
 	let thmbImg = item.querySelector(".res-lst-thumb-div");
 	let expDiv = item.querySelector(".res-lst-expand-div");
