@@ -96,6 +96,7 @@ xhr.addEventListener('readystatechange', function() {
 		}
 		console.log(unitTypes);
 		console.log(units);
+		populateApts();
 		dataReady = true;
 	}
 });
