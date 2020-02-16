@@ -34,7 +34,7 @@ function populateApts() {
 		}
 		// Loop through each units[i] entry, clone aptDiv + populate
 		for(let j = 0; 0 < units[i].length; j++) {
-			console.log(aptDiv.datatset.apt + " - " + units[i][j][0])
+			console.log(aptDiv.datatset.apt + ": " + units[i][j][0])
 		}
 	}
 }
