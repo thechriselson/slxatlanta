@@ -23,6 +23,22 @@ function pushToUnitTypes(i, j, item) {
 	else {unitTypes[i][j].push(item)}
 }
 
+function populateApts() {
+	for(let i = 0; i < unitTypes.length; i++) {
+		//let lstItem = {};
+		let aptDiv = {};
+		// Match unitTypes[i] to its corresponding list item
+		for(let j = 0; j < lstArr.length; j++) {
+			aptDiv = lstArr[i].querySelector(".res-lst-apt-div");
+			if(aptDiv.dataset.name.toUpperCase() == unitTypes[i][0].toUpperCase()) {break}
+		}
+		// Loop through each units[i] entry, clone aptDiv + populate
+		for(let j = 0; 0 < units[i].length; j++) {
+			console.log(aptDiv.datatset.name + " - " + units[i][j][0])
+		}
+	}
+}
+
 // For IE
 if(!Object.keys) Object.keys = function(o) {
 	if(o !== Object(o))
