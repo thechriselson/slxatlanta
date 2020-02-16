@@ -72,7 +72,7 @@ xhr.addEventListener('readystatechange', function() {
 						pushToUnitTypes(j, 3, minPrice);
 						pushToUnitTypes(j, 3, maxPrice);
 						// Push selected attributes to new units[] entry
-						units[j].push([unitAttrs.UnitNumber, floorNum, unitObj.Rent["@attributes"].MinRent.split(".")[0], ]);
+						units[j].push([unitAttrs.UnitNumber, floorNum, unitAttrs.AvailableOn, [unitObj.Rent["@attributes"].MinRent.split(".")[0], minPrice, maxPrice]]);
 						break
 					}
 				}
@@ -124,7 +124,6 @@ function computeGalMaxH() {
 
 function filterCheck(item, attrs) {
 	if(dataReady == true) {
-		console.log(actvFltrs);
 		let checkArr = [[], [], [], []];
 		for(let i = 1; i < attrs.length; i++) {
 			if(attrs[i].length == 0 || actvFltrs[i-1] == undefined || actvFltrs[i-1].length == 0) {checkArr[i-1].push(false); continue}
@@ -133,7 +132,6 @@ function filterCheck(item, attrs) {
 				if(attrs[i][j] != actvFltr) {checkArr[i-1].push(true)}
 				else {checkArr[i-1].push(false)}
 			}
-			console.log(checkArr);
 		}
 		for(let i = 0; i < checkArr.length; i++) {
 			if(!checkArr[i].includes(false)) {item.dataset.filter = "true"; break}
