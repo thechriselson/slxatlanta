@@ -30,11 +30,11 @@ function populateApts() {
 		// Match unitTypes[i] to its corresponding list item
 		for(let j = 0; j < lstArr.length; j++) {
 			aptDiv = lstArr[i].querySelector(".res-lst-apt-div");
-			if(aptDiv.dataset.name.toUpperCase() == unitTypes[i][0].toUpperCase()) {break}
+			if(aptDiv.dataset.apt.toUpperCase() == unitTypes[i][0].toUpperCase()) {break}
 		}
 		// Loop through each units[i] entry, clone aptDiv + populate
 		for(let j = 0; 0 < units[i].length; j++) {
-			console.log(aptDiv.datatset.name + " - " + units[i][j][0])
+			console.log(aptDiv.datatset.apt + " - " + units[i][j][0])
 		}
 	}
 }
