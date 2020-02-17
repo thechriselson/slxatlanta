@@ -12,7 +12,7 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice")]; // Add move-in-date
 const actvFltrs = [];
 
-// Upgrade to filter activated
+// OLD - Upgrade to filter activated
 const g2LTrgr = document.getElementById("resG2LTrigger");
 
 var lstView = false;
@@ -156,6 +156,7 @@ function changeSlide() {
 	lstSldr.style.transform = "translateX(-" + currentSld * 100 + "%)";
 }
 
+// Filter selectors
 for(let i = 0; i < fltrArr.length; i++) {
 	fltrArr[i].addEventListener('change', function() {
 		actvFltrs[i] = fltrArr[i].value;
@@ -163,6 +164,7 @@ for(let i = 0; i < fltrArr.length; i++) {
 	})
 }
 
+// OLD - Switch views (gallery - list)
 g2LTrgr.addEventListener('click', function() {
 	if(lstView == false) {
 		lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
@@ -180,9 +182,11 @@ g2LTrgr.addEventListener('click', function() {
 	}
 });
 
+// List items - Switch view (list to detail)
 for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].addEventListener('click', function() {
 		if(detView == false) {
+			// Minimise non-selected + Expand selected
 			for(let j = 0; j < lstArr.length; j++) {
 				if(lstArr[j] != lstArr[i]) {lstItem(lstArr[j], 0)}
 				else {lstItem(lstArr[j], 2)}
