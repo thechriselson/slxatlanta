@@ -32,7 +32,6 @@ function computeGalMaxH() {
 function filterCheck(item, attrs, aptAttrs) {
 	// If API data is ready, check against unitTypes[]
 	if(dataReady == true) {
-		console.log(attrs); console.log(aptAttrs);
 		let checkArr = [[], [], [], []];
 		for(let i = 1; i < attrs.length; i++) {
 			if(attrs[i].length == 0 || actvFltrs[i-1] == undefined || actvFltrs[i-1].length == 0) {checkArr[i-1].push(false); continue}
@@ -85,59 +84,71 @@ function opacity1(element) {
 }
 
 function lstItem(item, x) {
-	let contentCon = item.querySelector(".res-lst-content-con");
-	let thmbImg = item.querySelector(".res-lst-thumb-div");
-	let expDiv = item.querySelector(".res-lst-expand-div");
-	let buffers = item.querySelectorAll(".res-lst-overview-buffer");
-	let arrowL = item.querySelector(".res-lst-arrow-left");
-	let arrowR = item.querySelector(".res-lst-arrow-right");
-	if(x == 0) {lstItemMin(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR)}
-	else if(x == 1) {lstItemThmb(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR)}
-	else if(x == 2) {lstItemExp(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR)}
+	// [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
+	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
+	let s = item.querySelector(".res-lst-data").dataset.state;
+	if(s == 0) {if(x == 1) {lstItemThmb(item, els)} else if(x == 2) {lstItemExp(item, els)}}
+	else if(s == 1) {if(x == 0) {lstItemMin(item, els)} else if(x == 2) {lstItemExp(item, els)}}
+	else if(s == 2) {if(x == 0) {lstItemMin(item, els)} else if(x == 1) {lstItemThmb(item, els)}}
 }
 
-function lstItemMin(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR) {
+function lstItemMin(item, els) {
+	item.querySelector(".res-lst-data").dataset.state = 0;
+	item.style.cursor = "none";
 	// Fade out
-	opacity0(item);
-	// Minimise
+	opacity0(els[0]); opacity0(item);
+	// Resize
 	setTimeout(function() {
-		item.style.maxHeight = "0rem";
-		contentCon.style.maxHeight = "0rem";
+		// Shrink
+		els[0].style.maxHeight = "0rem"; item.style.maxHeight = "0rem";
 		item.style.borderBottomWidth = "0rem";
 	}, 200);
 }
 
-function lstItemThmb(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR) {
-	item.style.maxHeight = "12rem";
-	contentCon.style.maxHeight = "0rem";
-	item.style.borderBottomWidth = "0.125rem";
+function lstItemThmb(item, els) {
+	item.querySelector(".res-lst-data").dataset.state = 1;
+	// Fade out
+	opacity0(els[0]); opacity0(els[4][0]); opacity0(els[4][1]);
+	// Resize
 	setTimeout(function() {
-		opacity1(item);
-	}, 400);
+		els[4][0].style.display = "none"; els[4][1].style.display = "none";
+		// Shrink
+		els[0].style.maxHeight = "0rem";
+		els[3][0].style.width = "0rem"; els[3][1].style.width = "0rem";
+		// Expand
+		item.style.maxHeight = "12rem"; item.style.borderBottomWidth = "0.125rem";
+		els[1].style.height = "10rem"; els[1].style.width = "10rem";
+		els[2].style.height = "2.125rem";
+	}, 200);
+	// Fade in
+	setTimeout(function() {
+		els[3][0].style.display = "none"; els[3][1].style.display = "none";
+		opacity1(item); opacity1(els[1]); opacity1(els[2]);
+	}, 600);
+	item.style.cursor = "pointer";
 }
 
-function lstItemExp(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR) {
+function lstItemExp(item, els) {
+	item.querySelector(".res-lst-data").dataset.state = 2;
 	item.style.cursor = "auto";
-	// Fade out elements
-	opacity0(thmbImg); opacity0(expDiv);
-	// Resize elements
+	// Fade out
+	opacity0(els[1]); opacity0(els[2]);
+	// Resize
 	setTimeout(function() {
-		// Shrink thumbnail elements
-		buffers[0].style.display = "block"; buffers[1].style.display = "block";
-		buffers[0].style.width = "2rem"; buffers[1].style.width = "2rem";
-		thmbImg.style.height = "0rem"; thmbImg.style.width = "0rem";
-		expDiv.style.height = "0rem";
-		// Expand content elements
-		item.style.maxHeight = "75rem"; contentCon.style.maxHeight = "60rem";
+		// Shrink
+		els[3][0].style.display = "block"; els[3][1].style.display = "block";
+		els[3][0].style.width = "2rem"; els[3][1].style.width = "2rem";
+		els[1].style.height = "0rem"; els[1].style.width = "0rem";
+		els[2].style.height = "0rem";
+		// Expand
+		item.style.maxHeight = "75rem"; els[0].style.maxHeight = "60rem";
 		item.style.borderBottomWidth = "0.125rem";
 	}, 200);
-	// Fade in elements
+	// Fade in
 	setTimeout(function() {
-		// Arrows
-		arrowL.style.display = "block"; arrowR.style.display = "block";
-		opacity1(arrowL); opacity1(arrowR);
-		// Content
-		opacity1(item); opacity1(contentCon);
+		els[4][0].style.display = "block"; els[4][1].style.display = "block";
+		opacity1(els[4][0]); opacity1(els[4][1]);
+		opacity1(item); opacity1(els[0]);
 	}, 600);
 }
 
@@ -187,7 +198,7 @@ for(let i = 0; i < lstArr.length; i++) {
 					lstItem(lstArr[k], 2);
 				}
 			detView = true;
-			}, 1000);
+			}, 800);
 		}
 	});
 	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {
