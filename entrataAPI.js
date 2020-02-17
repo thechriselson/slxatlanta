@@ -25,16 +25,23 @@ function pushToUnitTypes(i, j, item) {
 
 function populateApts() {
 	for(let i = 0; i < unitTypes.length; i++) {
-		//let lstItem = {};
-		let aptDiv = {};
-		// Match unitTypes[i] to its corresponding list item
-		for(let j = 0; j < lstArr.length; j++) {
-			aptDiv = lstArr[i].querySelector(".res-lst-apt-div");
-			if(aptDiv.dataset.apt.toUpperCase() == unitTypes[i][0].toUpperCase()) {break}
+		let aptDiv = {}
+		// Match unitTypes[i] to its corresponding list item + store its aptDiv
+		for(let j = 0; j < lstArr.length; j ++) {
+			aptDiv = lstArr[j].querySelector(".res-lst-apt-div");
+			if(aptDiv.dataset.apt.toUpperCase() == unitTypes[i][0][0]) {break}
 		}
-		// Loop through each units[i] entry, clone aptDiv + populate
-		for(let j = 0; 0 < units[i].length; j++) {
-			console.log(aptDiv.datatset.apt + ": " + units[i][j][0])
+		// For each units[i], clone aptDiv + populate
+		for(let j = 0; j < units[i].length; j++) {
+			let aptCon = aptDiv.parentNode
+			let newApt = aptDiv.cloneNode(true);
+			let txtArr = newApt.querySelectorAll(".res-lst-apt-txt");
+			txtArr[0].innerText = "APT " + units[i][j][0];
+			txtArr[1].innerText = "Floor " + units[i][j][1];
+			txtArr[2].innerText = "Available " + units[i][j][2];
+			txtArr[3].innerText = "Starting at $" + units[i][j][3][0];
+			newApt.style.display = "flex";
+			aptCon.appendChild(newApt);
 		}
 	}
 }

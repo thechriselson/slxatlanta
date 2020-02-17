@@ -29,8 +29,10 @@ function computeGalMaxH() {
 	galDiv.style.maxHeight = galMaxH;
 }
 
-function filterCheck(item, attrs) {
+function filterCheck(item, attrs, aptAttrs) {
+	// If API data is ready, check against unitTypes[]
 	if(dataReady == true) {
+		console.log(attrs); console.log(aptAttrs);
 		let checkArr = [[], [], [], []];
 		for(let i = 1; i < attrs.length; i++) {
 			if(attrs[i].length == 0 || actvFltrs[i-1] == undefined || actvFltrs[i-1].length == 0) {checkArr[i-1].push(false); continue}
@@ -45,6 +47,7 @@ function filterCheck(item, attrs) {
 			else {item.dataset.filter = "false"}
 		}
 	}
+	// If API data isn't ready, check against tempAttrs[]
 	else {
 		for(let i = 1; i < attrs.length; i++) {
 			let actvFltr = Number(actvFltrs[i-1]);
@@ -52,6 +55,7 @@ function filterCheck(item, attrs) {
 			else {item.dataset.filter = "false"}
 		}
 	}
+	// Set list item state based on data-filter value
 	if(item.dataset.filter == "true") {lstItem(item, 0)}
 	else {lstItem(item, 1)}
 }
@@ -63,7 +67,7 @@ function filter() {
 		if(dataReady == true) {
 			// Match current lstArr[i] to correct unitType[j] + filterCheck() 
 			for(let j = 0; j < unitTypes.length; j++) {
-				if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j])}
+				if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j])}
 			}
 		}
 		else {filterCheck(lstArr[i], tempAttrs)}
