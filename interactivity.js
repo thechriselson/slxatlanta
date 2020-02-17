@@ -119,31 +119,26 @@ function lstItemThmb(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR)
 function lstItemExp(item, contentCon, thmbImg, expDiv, buffers, arrowL, arrowR) {
 	item.style.cursor = "auto";
 	// Fade out elements
-	opacity0(thmbImg);
-	opacity0(expDiv);
+	opacity0(thmbImg); opacity0(expDiv);
 	// Resize elements
 	setTimeout(function() {
+		// Shrink thumbnail elements
 		buffers[0].style.display = "block"; buffers[1].style.display = "block";
 		buffers[0].style.width = "2rem"; buffers[1].style.width = "2rem";
 		thmbImg.style.height = "0rem"; thmbImg.style.width = "0rem";
 		expDiv.style.height = "0rem";
+		// Expand content elements
+		item.style.maxHeight = "75rem"; contentCon.style.maxHeight = "60rem";
+		item.style.borderBottomWidth = "0.125rem";
 	}, 200);
-	// Fade in arrows
+	// Fade in elements
 	setTimeout(function() {
+		// Arrows
 		arrowL.style.display = "block"; arrowR.style.display = "block";
 		opacity1(arrowL); opacity1(arrowR);
-	}, 400);
-	// Expand
-	setTimeout(function() {
-		item.style.maxHeight = "75rem";
-		contentCon.style.maxHeight = "60rem";
-		item.style.borderBottomWidth = "0.125rem";
+		// Content
+		opacity1(item); opacity1(contentCon);
 	}, 600);
-	// Fade in
-	setTimeout(function() {
-		opacity1(item);
-		opacity1(contentCon);
-	}, 1000);
 }
 
 function changeSlide() {
