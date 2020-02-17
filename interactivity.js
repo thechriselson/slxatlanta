@@ -2,6 +2,7 @@
 // Interactivity //
 ///////////////////
 
+const contDiv = document.querySelector(".res-content-div");
 const galDiv = document.querySelector(".res-gal-div");
 const galArr = document.getElementsByClassName("res-gal-col-item");
 const lstDiv = document.querySelector(".res-lst-div");
@@ -15,8 +16,10 @@ const actvFltrs = [];
 // OLD - Upgrade to filter activated
 const g2LTrgr = document.getElementById("resG2LTrigger");
 
-var lstView = false;
-var detView = false;
+// 0 = Gallery, 1 = List, 2 = Detail
+var currentView = 0;
+//var lstView = false;
+//var detView = false;
 var galNum = 0;
 var galMaxH = "";
 var currentSld = 0;
@@ -27,6 +30,105 @@ function computeGalMaxH() {
 	let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
 	galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
 	galDiv.style.maxHeight = galMaxH;
+}
+
+function changeSlide() {lstSldr.style.transform = "translateX(-" + currentSld * 100 + "%)"}
+
+function opacity0(element) {
+	element.style.opacity = "0";
+	element.style.filter = "alpha(opacity=0)";
+}
+
+function opacity1(element) {
+	element.style.opacity = "1";
+	element.style.filter = "alpha(opacity=100)";
+}
+
+function lstItemMin(item, els) {
+	item.querySelector(".res-lst-data").dataset.state = 0;
+	item.style.cursor = "none";
+	// Fade out
+	opacity0(els[0]); opacity0(item);
+	// Resize
+	setTimeout(function() {
+		// Shrink
+		els[0].style.maxHeight = "0rem"; item.style.maxHeight = "0rem";
+		item.style.borderBottomWidth = "0rem";
+	}, 200);
+}
+
+function lstItemThmb(item, els) {
+	item.querySelector(".res-lst-data").dataset.state = 1;
+	// Fade out
+	opacity0(els[0]); opacity0(els[4][0]); opacity0(els[4][1]);
+	// Resize
+	setTimeout(function() {
+		els[4][0].style.display = "none"; els[4][1].style.display = "none";
+		// Shrink
+		els[0].style.maxHeight = "0rem";
+		els[3][0].style.width = "0rem"; els[3][1].style.width = "0rem";
+		// Expand
+		item.style.maxHeight = "12rem"; item.style.borderBottomWidth = "0.125rem";
+		els[1].style.height = "10rem"; els[1].style.width = "10rem";
+		els[2].style.height = "2.125rem";
+	}, 200);
+	// Fade in
+	setTimeout(function() {
+		els[3][0].style.display = "none"; els[3][1].style.display = "none";
+		opacity1(item); opacity1(els[1]); opacity1(els[2]);
+	}, 600);
+	item.style.cursor = "pointer";
+}
+
+function lstItemExp(item, els, mxh) {
+	item.querySelector(".res-lst-data").dataset.state = 2;
+	item.style.cursor = "auto";
+	// Fade out
+	opacity0(els[1]); opacity0(els[2]);
+	// Resize
+	setTimeout(function() {
+		// Shrink
+		els[3][0].style.display = "block"; els[3][1].style.display = "block";
+		els[3][0].style.width = "2rem"; els[3][1].style.width = "2rem";
+		els[1].style.height = "0rem"; els[1].style.width = "0rem";
+		els[2].style.height = "0rem";
+		// Expand
+		if(!typeof mxh === undefined) {item.style.maxHeight = mxh} else {item.style.maxHeight = "75rem"}
+		/*item.style.maxHeight = "75rem";*/ els[0].style.maxHeight = "60rem";
+		item.style.borderBottomWidth = "0.125rem";
+	}, 200);
+	// Fade in
+	setTimeout(function() {
+		els[4][0].style.display = "block"; els[4][1].style.display = "block";
+		opacity1(els[4][0]); opacity1(els[4][1]);
+		opacity1(item); opacity1(els[0]);
+	}, 600);
+}
+
+function lstItem(item, x, mxh) {
+	// [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
+	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
+	let s = item.querySelector(".res-lst-data").dataset.state;
+	if(s == 0) {if(x == 1) {lstItemThmb(item, els)} else if(x == 2) {lstItemExp(item, els, mxh)}}
+	else if(s == 1) {if(x == 0) {lstItemMin(item, els)} else if(x == 2) {lstItemExp(item, els, mxh)}}
+	else if(s == 2) {if(x == 0) {lstItemMin(item, els)} else if(x == 1) {lstItemThmb(item, els)}}
+}
+
+function galView() {}
+
+function detView() {
+	// Change list's flexDirection to horizontal + set to current slide
+	detView = true;
+	let lstColList = document.querySelector(".res-lst-col-list");
+	setTimeout(function() {
+		lstColList.style.flexDirection = "row";
+		lstColList.style.WebkitFlexDirection = "row";
+		changeSlide();
+		// Expand non-current listings + set their maxHeight to current's computed height
+		for(let k = 0; k < lstArr.length; k++) {
+			lstItem(lstArr[k], 2);
+		}
+	}, 800);
 }
 
 function filterCheck(item, attrs, aptAttrs) {
@@ -73,100 +175,14 @@ function filter() {
 	}
 }
 
-function opacity0(element) {
-	element.style.opacity = "0";
-	element.style.filter = "alpha(opacity=0)";
-}
-
-function opacity1(element) {
-	element.style.opacity = "1";
-	element.style.filter = "alpha(opacity=100)";
-}
-
-function lstItem(item, x) {
-	// [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
-	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
-	let s = item.querySelector(".res-lst-data").dataset.state;
-	if(s == 0) {if(x == 1) {lstItemThmb(item, els)} else if(x == 2) {lstItemExp(item, els)}}
-	else if(s == 1) {if(x == 0) {lstItemMin(item, els)} else if(x == 2) {lstItemExp(item, els)}}
-	else if(s == 2) {if(x == 0) {lstItemMin(item, els)} else if(x == 1) {lstItemThmb(item, els)}}
-}
-
-function lstItemMin(item, els) {
-	item.querySelector(".res-lst-data").dataset.state = 0;
-	item.style.cursor = "none";
-	// Fade out
-	opacity0(els[0]); opacity0(item);
-	// Resize
-	setTimeout(function() {
-		// Shrink
-		els[0].style.maxHeight = "0rem"; item.style.maxHeight = "0rem";
-		item.style.borderBottomWidth = "0rem";
-	}, 200);
-}
-
-function lstItemThmb(item, els) {
-	item.querySelector(".res-lst-data").dataset.state = 1;
-	// Fade out
-	opacity0(els[0]); opacity0(els[4][0]); opacity0(els[4][1]);
-	// Resize
-	setTimeout(function() {
-		els[4][0].style.display = "none"; els[4][1].style.display = "none";
-		// Shrink
-		els[0].style.maxHeight = "0rem";
-		els[3][0].style.width = "0rem"; els[3][1].style.width = "0rem";
-		// Expand
-		item.style.maxHeight = "12rem"; item.style.borderBottomWidth = "0.125rem";
-		els[1].style.height = "10rem"; els[1].style.width = "10rem";
-		els[2].style.height = "2.125rem";
-	}, 200);
-	// Fade in
-	setTimeout(function() {
-		els[3][0].style.display = "none"; els[3][1].style.display = "none";
-		opacity1(item); opacity1(els[1]); opacity1(els[2]);
-	}, 600);
-	item.style.cursor = "pointer";
-}
-
-function lstItemExp(item, els) {
-	item.querySelector(".res-lst-data").dataset.state = 2;
-	item.style.cursor = "auto";
-	// Fade out
-	opacity0(els[1]); opacity0(els[2]);
-	// Resize
-	setTimeout(function() {
-		// Shrink
-		els[3][0].style.display = "block"; els[3][1].style.display = "block";
-		els[3][0].style.width = "2rem"; els[3][1].style.width = "2rem";
-		els[1].style.height = "0rem"; els[1].style.width = "0rem";
-		els[2].style.height = "0rem";
-		// Expand
-		item.style.maxHeight = "75rem"; els[0].style.maxHeight = "60rem";
-		item.style.borderBottomWidth = "0.125rem";
-	}, 200);
-	// Fade in
-	setTimeout(function() {
-		els[4][0].style.display = "block"; els[4][1].style.display = "block";
-		opacity1(els[4][0]); opacity1(els[4][1]);
-		opacity1(item); opacity1(els[0]);
-	}, 600);
-}
-
-function changeSlide() {
-	lstSldr.style.transform = "translateX(-" + currentSld * 100 + "%)";
-}
-
-// Filter selectors
-for(let i = 0; i < fltrArr.length; i++) {
-	fltrArr[i].addEventListener('change', function() {
-		actvFltrs[i] = fltrArr[i].value;
-		filter();
-	})
+function switchView() {
+	if(currentView == 0) {contDiv.style.transform = "translateX(-100%)"; currentView = 1}
+	else {contDiv.style.transform = "translateX(0%)"; currentView = 0}
 }
 
 // OLD - Switch views (gallery - list)
 g2LTrgr.addEventListener('click', function() {
-	if(lstView == false) {
+	if(currentView == 0) {
 		lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
 		setTimeout(function() {
 			galDiv.style.maxHeight = "0rem";
@@ -182,7 +198,24 @@ g2LTrgr.addEventListener('click', function() {
 	}
 });
 
-// List items - Switch view (list to detail)
+// Filter reset
+document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
+	// Reset filter selectors
+	for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].selectedIndex = 0}
+	// Remove all actvFltrs[]
+	for(let i = 0; i < actvFltrs.length; i++) {actvFltrs[i] = undefined}
+	filter();
+});
+
+// Filter selectors
+for(let i = 0; i < fltrArr.length; i++) {
+	fltrArr[i].addEventListener('change', function() {
+		actvFltrs[i] = fltrArr[i].value;
+		filter();
+	})
+}
+
+// List items
 for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].addEventListener('click', function() {
 		if(detView == false) {
@@ -192,8 +225,9 @@ for(let i = 0; i < lstArr.length; i++) {
 				else {lstItem(lstArr[j], 2)}
 			}
 			currentSld = i;
+			detView(i);
 			// Change list's flexDirection to horizontal + re-expand list items to full
-			let lstColList = document.querySelector(".res-lst-col-list");
+			/*let lstColList = document.querySelector(".res-lst-col-list");
 			setTimeout(function() {
 				lstColList.style.flexDirection = "row";
 				lstColList.style.WebkitFlexDirection = "row"; // For Safari
@@ -202,7 +236,7 @@ for(let i = 0; i < lstArr.length; i++) {
 					lstItem(lstArr[k], 2);
 				}
 			detView = true;
-			}, 800);
+			}, 800);*/
 		}
 	});
 	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {
