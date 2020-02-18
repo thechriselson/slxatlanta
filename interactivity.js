@@ -26,32 +26,6 @@ var galNum = 0;
 var galMaxH = "";
 var lstMaxH = "125rem";
 
-function computeGalMaxH() {
-	if(curVu == 0) {
-		if(galArr.length%2 != 0) {galNum = galArr.length + 1}
-		else {galNum = galArr.length}
-		let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
-		galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
-	}
-	else {galMaxH = "0rem"}
-	galDiv.style.maxHeight = galMaxH;
-}
-
-function computeLstMaxH() {
-	if(curVu == 0) {lstMaxH = "0rem"; console.log("Gallery view")}
-	else {
-		if(curSt == 1) {lstMaxH = "" + (Number(getComputedStyle(lstArr[curIt]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem"; console.log("Detail view")}
-		else {
-			let fltrdLength = 0;
-			for(let i = 0; i < lstArr.length; i++) {if(lstArr[i].style.maxHeight != "0rem") {fltrdLength++}}
-			lstMaxH = "" + fltrdLength * 12 + "rem";
-			console.log("List view")
-		}
-	}
-	console.log("lstMaxH = " + lstMaxH);
-	lstDiv.style.maxHeight = lstMaxH;
-}
-
 function updateMaxH() {
 	computeGalMaxH();
 	computeLstMaxH();
@@ -67,7 +41,7 @@ function changeSlide() {
 	// Recalculate lstMaxH + expand all with lstMaxH
 	setTimeout(function() {
 		lstMaxH = "" + (Number(getComputedStyle(lstArr[curIt]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem";
-		console.log(lstMaxH);
+		lstDiv.style.maxHeight = lstMaxH;
 		for(let i = 0; i < lstArr.length; i++) {lstItem(lstArr[i], 2, 1)}
 	}, 800);
 }
@@ -214,9 +188,26 @@ function switchState() {
 }
 
 function switchView() {
-	if(curVu == 0) {curVu = 1; contDiv.style.transform = "translateX(-100%)"}
-	else {curVu = 0; contDiv.style.transform = "translateX(0%)"}
-	updateMaxH()
+	if(curVu == 0) {
+		curVu = 1;
+		contDiv.style.transform = "translateX(-100%)";
+		// Gallery
+		galMaxH = "0rem";
+		// List
+		lstDiv.style.maxHeight = lstMaxH;
+	}
+	else {
+		curVu = 0;
+		contDiv.style.transform = "translateX(0%)";
+		// Gallery
+		if(galArr.length%2 != 0) {galNum = galArr.length + 1}
+		else {galNum = galArr.length}
+		let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
+		galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
+		// List
+		lstDiv.style.maxHeight = "0rem";
+	}
+	galDiv.style.maxHeight = galMaxH;
 }
 
 // Filter reset
@@ -249,4 +240,4 @@ for(let i = 0; i < lstArr.length; i++) {
 // Switch view trigger
 svTrigger.addEventListener('click', switchView);
 
-window.addEventListener('resize', updateMaxH);
+//window.addEventListener('resize', updateMaxH);
