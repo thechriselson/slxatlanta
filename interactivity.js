@@ -17,16 +17,17 @@ const actvFltrs = [];
 // OLD - Upgrade to filter activated
 const svTrigger = document.getElementById("resG2LTrigger");
 
-// 0 = Gallery, 1 = List, 2 = Detail
-var currentView = 0;
-var currentState = 0;
+// Current vars
+var curVu = 0; // View: 0 = Gallery, 1 = List
+var curSt = 0; // State: 0 = List, 1 = Detail
+var curIt = 0; // Item
+
 var galNum = 0;
 var galMaxH = "";
-var lstMaxH = "0rem";
-var currentItem = 0;
+var lstMaxH = "125rem";
 
 function computeGalMaxH() {
-	if(currentView == 0) {
+	if(curVu == 0) {
 		if(galArr.length%2 != 0) {galNum = galArr.length + 1}
 		else {galNum = galArr.length}
 		let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
@@ -37,9 +38,9 @@ function computeGalMaxH() {
 }
 
 function computeLstMaxH() {
-	if(currentView == 0) {lstMaxH = "0rem"; console.log("Gallery view")}
+	if(curVu == 0) {lstMaxH = "0rem"; console.log("Gallery view")}
 	else {
-		if(currentState == 1) {lstMaxH = "" + (Number(getComputedStyle(lstArr[currentItem]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem"; console.log("Detail view")}
+		if(curSt == 1) {lstMaxH = "" + (Number(getComputedStyle(lstArr[curIt]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem"; console.log("Detail view")}
 		else {
 			let fltrdLength = 0;
 			for(let i = 0; i < lstArr.length; i++) {if(lstArr[i].style.maxHeight != "0rem") {fltrdLength++}}
@@ -51,13 +52,24 @@ function computeLstMaxH() {
 	lstDiv.style.maxHeight = lstMaxH;
 }
 
-function updateMaxH() {computeGalMaxH(); computeLstMaxH()}
-
-function changeSlide(old) {
-	lstItem(lstArr[currentItem], 2);
-	lstSldr.style.transform = "translateX(-" + currentItem * 100 + "%)";
-	if(typeof old !== "undefined") {setTimeout(function() {lstItem(lstArr[old], 0)}, 600)}
+function updateMaxH() {
+	computeGalMaxH();
 	computeLstMaxH();
+}
+
+function changeSlide() {
+	// Shrink other items + expand newItem if needed + slide
+	for(let i = 0; i < lstArr.length; i++) {
+		if(lstArr[i] != lstArr[curIt]) {/*lstArr[i].style.maxHeight = "0rem"*/lstItem(lstArr[i], 0)}
+		else {/*lstArr[i].style.maxHeight = "125rem"*/lstItem(lstArr[i], 2)}
+	}
+	lstSldr.style.transform = "translateX(-" + curIt * 100 + "%)";
+	// Recalculate lstMaxH + expand all with lstMaxH
+	setTimeout(function() {
+		lstMaxH = "" + (Number(getComputedStyle(lstArr[curIt]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem";
+		console.log(lstMaxH);
+		for(let i = 0; i < lstArr.length; i++) {lstItem(lstArr[i], 2, 1)}
+	}, 800);
 }
 
 function opacity0(element) {
@@ -104,7 +116,7 @@ function lstItemThmb(item, els) {
 	item.style.cursor = "pointer";
 }
 
-function lstItemExp(item, els) {
+function lstItemExp(item, els, mxh) {
 	item.style.cursor = "auto";
 	// Fade out
 	opacity0(els[1]); opacity0(els[2]);
@@ -116,7 +128,7 @@ function lstItemExp(item, els) {
 		els[1].style.height = "0rem"; els[1].style.width = "0rem";
 		els[2].style.height = "0rem";
 		// Expand
-		item.style.maxHeight = "101rem"; els[0].style.maxHeight = "102rem";
+		item.style.maxHeight = mxh; els[0].style.maxHeight = mxh;
 		item.style.borderBottomWidth = "0.125rem";
 	}, 200);
 	// Fade in
@@ -127,10 +139,12 @@ function lstItemExp(item, els) {
 	}, 600);
 }
 
-function lstItem(item, x) {
+// x: 0 = lstItemMin, 1 = lstItemThmb, 2 = lstItemExp
+// y: 0 = default mxh, 1 = lstMaxH
+function lstItem(item, x, y) {
 	// [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
 	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
-	let mxh = {}; if(currentItem != 0) {mxh = getComputedStyle(lstArr[currentItem]).height}
+	let mxh = "125rem"; if(y == 1) {mxh = lstMaxH}
 	if(x == 0) {lstItemMin(item, els)}
 	else if(x == 1) {lstItemThmb(item, els)}
 	else if(x == 2) {lstItemExp(item, els, mxh)}
@@ -180,29 +194,28 @@ function filter() {
 	}
 }
 
+// Edit to also switch back from Detail to List
 function switchState() {
-	// Default values for list to detail
+	// Default values for List to Detail
 	let cs = 1; let dir = "row"; let delay = 800;
-	// Change values if detail to list
-	if(currentState == 1) {dir = "column"; delay = 600; cs = 0}
-
-	currentState = cs;
-	// toDetail
+	// Change values if Detail to List
+	if(curSt == 1) {cs = 0; dir = "column"; delay = 600}
+	curSt = cs;
 	for(let i = 0; i < lstArr.length; i++) {
-		if(lstArr[i] != lstArr[currentItem]) {lstItem(lstArr[i], 0); setTimeout(function() {lstItem(lstArr[i], 2)}, 800)}
-		else {lstItem(lstArr[i], 2)}
+		if(lstArr[i] != lstArr[curIt]) {lstItem(lstArr[i], 0)}
+		else {lstItem(lstArr[i], 2, 0)}
 	}
 	setTimeout(function() {
 		lstColList.style.flexDirection = dir; lstColList.style.WebkitFlexDirection = dir;
-		lstArr[currentItem].style.transition = "transform 0ms";
+		lstSldr.style.transition = "transform 0ms";
 		changeSlide();
-		lstArr[currentItem].style.transition = "transform 600ms";
+		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200);
 	}, 800);
 }
 
 function switchView() {
-	if(currentView == 0) {currentView = 1; contDiv.style.transform = "translateX(-100%)"}
-	else {currentView = 0; contDiv.style.transform = "translateX(0%)"}
+	if(curVu == 0) {curVu = 1; contDiv.style.transform = "translateX(-100%)"}
+	else {curVu = 0; contDiv.style.transform = "translateX(0%)"}
 	updateMaxH()
 }
 
@@ -227,10 +240,10 @@ for(let i = 0; i < fltrArr.length; i++) {
 // List items
 for(let i = 0; i < lstArr.length; i++) {
 	// When clicked in list view
-	lstArr[i].addEventListener('click', function() {if(currentState == 0) {currentItem = i; switchState()}});
+	lstArr[i].addEventListener('click', function() {if(curSt == 0) {curIt = i; switchState()}});
 	// Arrows
-	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {let old = currentItem; currentItem = currentItem - 1; changeSlide(old)});
-	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {let old = currentItem; currentItem = currentItem + 1; changeSlide(old)});
+	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {curIt = curIt - 1; changeSlide()});
+	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
 }
 
 // Switch view trigger
