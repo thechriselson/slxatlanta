@@ -12,7 +12,7 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice")]; // Add move-in-date
-const actvFltrs = [];
+var actvFltrs = [];
 
 // OLD - Upgrade to filter activated
 const svTrigger = document.getElementById("resG2LTrigger");
@@ -24,7 +24,7 @@ var curIt = 0; // Item
 
 var galNum = 0;
 var galMaxH = "";
-var lstMaxH = "125rem";
+var lstMaxH = "150rem";
 
 function updateMaxH() {
 	computeGalMaxH();
@@ -118,7 +118,7 @@ function lstItem(item, x, y) {
 	// y: 0 = default mxh, 1 = lstMaxH
 	// els: [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
 	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
-	let mxh = "125rem"; if(y == 1) {mxh = lstMaxH}
+	let mxh = "150rem"; if(y == 1) {mxh = lstMaxH}
 	if(x == 0) {lstItemMin(item, els)}
 	else if(x == 1) {lstItemThmb(item, els)}
 	else if(x == 2) {lstItemExp(item, els, mxh)}
@@ -155,35 +155,45 @@ function filterCheck(item, attrs, aptAttrs) {
 }
 
 function filter() {
-	for(let i = 0; i < lstArr.length; i++) {
-		let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
-		let tempAttrs = [tempData.name.toUpperCase(), [Number(tempData.beds)]];
-		if(dataReady == true) {
-			// Match current lstArr[i] to correct unitType[j] + filterCheck() 
-			for(let j = 0; j < unitTypes.length; j++) {
-				if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j])}
+	let x = 0;
+	if(curVu == 0) {x = 600; switchView()}
+	if(curSt == 1) {x = 800; switchState()}
+	setTimeout(function() {
+		for(let i = 0; i < lstArr.length; i++) {
+			let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
+			let tempAttrs = [tempData.name.toUpperCase(), [Number(tempData.beds)]];
+			if(dataReady == true) {
+				// Match current lstArr[i] to correct unitType[j] + filterCheck() 
+				for(let j = 0; j < unitTypes.length; j++) {
+					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j])}
+				}
 			}
+			else {filterCheck(lstArr[i], tempAttrs)}
 		}
-		else {filterCheck(lstArr[i], tempAttrs)}
-	}
+	}, x)
 }
 
-// Edit to also switch back from Detail to List
 function switchState() {
-	// Default values for List to Detail
-	let cs = 1; let dir = "row"; let delay = 800;
-	// Change values if Detail to List
-	if(curSt == 1) {cs = 0; dir = "column"; delay = 600}
+	// curSt: 0 = List, 1 = Detail
+	let cs = 1; let dir = "row"; if(curSt == 1) {cs = 0; dir = "column"}
 	curSt = cs;
+	// Collapse
 	for(let i = 0; i < lstArr.length; i++) {
 		if(lstArr[i] != lstArr[curIt]) {lstItem(lstArr[i], 0)}
-		else {lstItem(lstArr[i], 2, 0)}
+		else if(curSt == 0) {lstItem(lstArr[i], 0)}
+		else {lstItem(lstArr[i], 2)}
 	}
+	// Reorientate + rebuild
 	setTimeout(function() {
 		lstColList.style.flexDirection = dir; lstColList.style.WebkitFlexDirection = dir;
 		lstSldr.style.transition = "transform 0ms";
-		changeSlide();
-		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200);
+		if(curSt == 0) {
+			lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
+			lstSldr.style.transform = "translateX(0%)";
+			for(let j = 0; j < lstArr.length; j++) {lstItem(lstArr[j], 1)}
+		}
+		else {changeSlide()}
+		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200)
 	}, 800);
 }
 
@@ -194,7 +204,8 @@ function switchView() {
 		// Gallery
 		galMaxH = "0rem";
 		// List
-		lstDiv.style.maxHeight = lstMaxH;
+		if(curSt == 0) {lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem"}
+		else {lstDiv.style.maxHeight = lstMaxH}
 	}
 	else {
 		curVu = 0;
