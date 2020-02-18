@@ -101,10 +101,9 @@ xhr.addEventListener('readystatechange', function() {
 				}
 			}
 		}
-		console.log(unitTypes);
-		console.log(units);
 		populateApts();
 		dataReady = true;
+		for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].disabled = false}
 	}
 });
 
