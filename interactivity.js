@@ -7,6 +7,7 @@ const galDiv = document.querySelector(".res-gal-div");
 const galArr = document.getElementsByClassName("res-gal-col-item");
 const lstDiv = document.querySelector(".res-lst-div");
 const lstArr = document.getElementsByClassName("res-lst-col-item");
+const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
@@ -14,25 +15,50 @@ const fltrArr = [document.getElementById("filterBed"), document.getElementById("
 const actvFltrs = [];
 
 // OLD - Upgrade to filter activated
-const g2LTrgr = document.getElementById("resG2LTrigger");
+const svTrigger = document.getElementById("resG2LTrigger");
 
 // 0 = Gallery, 1 = List, 2 = Detail
 var currentView = 0;
-//var lstView = false;
-//var detView = false;
+var currentState = 0;
 var galNum = 0;
 var galMaxH = "";
-var currentSld = 0;
+var lstMaxH = "0rem";
+var currentItem = 0;
 
 function computeGalMaxH() {
-	if(galArr.length%2 != 0) {galNum = galArr.length + 1}
-	else {galNum = galArr.length}
-	let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
-	galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
+	if(currentView == 0) {
+		if(galArr.length%2 != 0) {galNum = galArr.length + 1}
+		else {galNum = galArr.length}
+		let galImgH = Number(getComputedStyle(galArr[0]).height.replace(/[^\d\.\-]/g, ''));
+		galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
+	}
+	else {galMaxH = "0rem"}
 	galDiv.style.maxHeight = galMaxH;
 }
 
-function changeSlide() {lstSldr.style.transform = "translateX(-" + currentSld * 100 + "%)"}
+function computeLstMaxH() {
+	if(currentView == 0) {lstMaxH = "0rem"; console.log("Gallery view")}
+	else {
+		if(currentState == 1) {lstMaxH = "" + (Number(getComputedStyle(lstArr[currentItem]).height.replace(/[^\d\.-]/g, '')) / 16) + "rem"; console.log("Detail view")}
+		else {
+			let fltrdLength = 0;
+			for(let i = 0; i < lstArr.length; i++) {if(lstArr[i].style.maxHeight != "0rem") {fltrdLength++}}
+			lstMaxH = "" + fltrdLength * 12 + "rem";
+			console.log("List view")
+		}
+	}
+	console.log("lstMaxH = " + lstMaxH);
+	lstDiv.style.maxHeight = lstMaxH;
+}
+
+function updateMaxH() {computeGalMaxH(); computeLstMaxH()}
+
+function changeSlide(old) {
+	lstItem(lstArr[currentItem], 2);
+	lstSldr.style.transform = "translateX(-" + currentItem * 100 + "%)";
+	if(typeof old !== "undefined") {setTimeout(function() {lstItem(lstArr[old], 0)}, 600)}
+	computeLstMaxH();
+}
 
 function opacity0(element) {
 	element.style.opacity = "0";
@@ -45,7 +71,6 @@ function opacity1(element) {
 }
 
 function lstItemMin(item, els) {
-	item.querySelector(".res-lst-data").dataset.state = 0;
 	item.style.cursor = "none";
 	// Fade out
 	opacity0(els[0]); opacity0(item);
@@ -58,7 +83,6 @@ function lstItemMin(item, els) {
 }
 
 function lstItemThmb(item, els) {
-	item.querySelector(".res-lst-data").dataset.state = 1;
 	// Fade out
 	opacity0(els[0]); opacity0(els[4][0]); opacity0(els[4][1]);
 	// Resize
@@ -80,8 +104,7 @@ function lstItemThmb(item, els) {
 	item.style.cursor = "pointer";
 }
 
-function lstItemExp(item, els, mxh) {
-	item.querySelector(".res-lst-data").dataset.state = 2;
+function lstItemExp(item, els) {
 	item.style.cursor = "auto";
 	// Fade out
 	opacity0(els[1]); opacity0(els[2]);
@@ -93,8 +116,7 @@ function lstItemExp(item, els, mxh) {
 		els[1].style.height = "0rem"; els[1].style.width = "0rem";
 		els[2].style.height = "0rem";
 		// Expand
-		if(!typeof mxh === undefined) {item.style.maxHeight = mxh} else {item.style.maxHeight = "75rem"}
-		/*item.style.maxHeight = "75rem";*/ els[0].style.maxHeight = "60rem";
+		item.style.maxHeight = "101rem"; els[0].style.maxHeight = "102rem";
 		item.style.borderBottomWidth = "0.125rem";
 	}, 200);
 	// Fade in
@@ -105,30 +127,13 @@ function lstItemExp(item, els, mxh) {
 	}, 600);
 }
 
-function lstItem(item, x, mxh) {
+function lstItem(item, x) {
 	// [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
 	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
-	let s = item.querySelector(".res-lst-data").dataset.state;
-	if(s == 0) {if(x == 1) {lstItemThmb(item, els)} else if(x == 2) {lstItemExp(item, els, mxh)}}
-	else if(s == 1) {if(x == 0) {lstItemMin(item, els)} else if(x == 2) {lstItemExp(item, els, mxh)}}
-	else if(s == 2) {if(x == 0) {lstItemMin(item, els)} else if(x == 1) {lstItemThmb(item, els)}}
-}
-
-function galView() {}
-
-function detView() {
-	// Change list's flexDirection to horizontal + set to current slide
-	detView = true;
-	let lstColList = document.querySelector(".res-lst-col-list");
-	setTimeout(function() {
-		lstColList.style.flexDirection = "row";
-		lstColList.style.WebkitFlexDirection = "row";
-		changeSlide();
-		// Expand non-current listings + set their maxHeight to current's computed height
-		for(let k = 0; k < lstArr.length; k++) {
-			lstItem(lstArr[k], 2);
-		}
-	}, 800);
+	let mxh = {}; if(currentItem != 0) {mxh = getComputedStyle(lstArr[currentItem]).height}
+	if(x == 0) {lstItemMin(item, els)}
+	else if(x == 1) {lstItemThmb(item, els)}
+	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
 function filterCheck(item, attrs, aptAttrs) {
@@ -175,35 +180,39 @@ function filter() {
 	}
 }
 
-function switchView() {
-	if(currentView == 0) {contDiv.style.transform = "translateX(-100%)"; currentView = 1}
-	else {contDiv.style.transform = "translateX(0%)"; currentView = 0}
+function switchState() {
+	// Default values for list to detail
+	let cs = 1; let dir = "row"; let delay = 800;
+	// Change values if detail to list
+	if(currentState == 1) {dir = "column"; delay = 600; cs = 0}
+
+	currentState = cs;
+	// toDetail
+	for(let i = 0; i < lstArr.length; i++) {
+		if(lstArr[i] != lstArr[currentItem]) {lstItem(lstArr[i], 0); setTimeout(function() {lstItem(lstArr[i], 2)}, 800)}
+		else {lstItem(lstArr[i], 2)}
+	}
+	setTimeout(function() {
+		lstColList.style.flexDirection = dir; lstColList.style.WebkitFlexDirection = dir;
+		lstArr[currentItem].style.transition = "transform 0ms";
+		changeSlide();
+		lstArr[currentItem].style.transition = "transform 600ms";
+	}, 800);
 }
 
-// OLD - Switch views (gallery - list)
-g2LTrgr.addEventListener('click', function() {
-	if(currentView == 0) {
-		lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
-		setTimeout(function() {
-			galDiv.style.maxHeight = "0rem";
-		}, 600);
-		lstView = true;
-	}
-	else {
-		galDiv.style.maxHeight = galMaxH;
-		setTimeout(function() {
-			lstDiv.style.maxHeight = "0rem";
-		}, 600);
-		lstView = false;
-	}
-});
+function switchView() {
+	if(currentView == 0) {currentView = 1; contDiv.style.transform = "translateX(-100%)"}
+	else {currentView = 0; contDiv.style.transform = "translateX(0%)"}
+	updateMaxH()
+}
 
 // Filter reset
 document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
 	// Reset filter selectors
 	for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].selectedIndex = 0}
 	// Remove all actvFltrs[]
-	for(let i = 0; i < actvFltrs.length; i++) {actvFltrs[i] = undefined}
+	actvFltrs = [];
+	//for(let i = 0; i < actvFltrs.length; i++) {actvFltrs[i] = undefined}
 	filter();
 });
 
@@ -217,40 +226,14 @@ for(let i = 0; i < fltrArr.length; i++) {
 
 // List items
 for(let i = 0; i < lstArr.length; i++) {
-	lstArr[i].addEventListener('click', function() {
-		if(detView == false) {
-			// Minimise non-selected + Expand selected
-			for(let j = 0; j < lstArr.length; j++) {
-				if(lstArr[j] != lstArr[i]) {lstItem(lstArr[j], 0)}
-				else {lstItem(lstArr[j], 2)}
-			}
-			currentSld = i;
-			detView(i);
-			// Change list's flexDirection to horizontal + re-expand list items to full
-			/*let lstColList = document.querySelector(".res-lst-col-list");
-			setTimeout(function() {
-				lstColList.style.flexDirection = "row";
-				lstColList.style.WebkitFlexDirection = "row"; // For Safari
-				changeSlide();
-				for(let k = 0; k < lstArr.length; k++) {
-					lstItem(lstArr[k], 2);
-				}
-			detView = true;
-			}, 800);*/
-		}
-	});
-	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {
-		currentSld = currentSld - 1;
-		changeSlide();
-	});
-	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {
-		currentSld = currentSld + 1;
-		changeSlide();
-	});
+	// When clicked in list view
+	lstArr[i].addEventListener('click', function() {if(currentState == 0) {currentItem = i; switchState()}});
+	// Arrows
+	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {let old = currentItem; currentItem = currentItem - 1; changeSlide(old)});
+	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {let old = currentItem; currentItem = currentItem + 1; changeSlide(old)});
 }
 
-window.addEventListener('resize', function() {
-	computeGalMaxH();
-});
+// Switch view trigger
+svTrigger.addEventListener('click', switchView);
 
-computeGalMaxH();
+window.addEventListener('resize', updateMaxH);
