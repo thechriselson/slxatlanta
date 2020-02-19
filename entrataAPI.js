@@ -102,6 +102,7 @@ xhr.addEventListener('readystatechange', function() {
 			}
 		}
 		populateApts();
+		changeSlide();
 		dataReady = true;
 		for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].disabled = false}
 	}

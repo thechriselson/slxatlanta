@@ -32,6 +32,8 @@ function updateMaxH() {
 }
 
 function changeSlide() {
+	if(curIt < 0) {curIt = 1; return}
+	if(curIt == lstArr.length) {curIt = lstArr.length - 1; return}
 	// Shrink other items + expand newItem if needed + slide
 	for(let i = 0; i < lstArr.length; i++) {
 		if(lstArr[i] != lstArr[curIt]) {/*lstArr[i].style.maxHeight = "0rem"*/lstItem(lstArr[i], 0)}
@@ -229,12 +231,6 @@ function switchView() {
 }
 
 // View all
-/*switcher.addEventListener('click', function() {
-	let txt = switcher.querySelector(".res-fltr-all-txt");
-	if(curVu == 0) {opacity0(txt); setTimeout(function() {txt.innerText = "View Gallery"; opacity1(txt)}, 400)}
-	else {opacity0(txt); setTimeout(function() {txt.innerText = "View All"; opacity1(txt)}, 400)}
-	switchView();
-});*/
 switcher.addEventListener('click', switchView);
 
 // Filter reset
