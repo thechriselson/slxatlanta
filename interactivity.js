@@ -14,8 +14,8 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice")]; // Add move-in-date
 var actvFltrs = [];
 
-// OLD - Upgrade to filter activated
-const svTrigger = document.getElementById("resG2LTrigger");
+// Switcher
+const switcher = document.querySelector(".res-fltr-all-div");
 
 // Current vars
 var curVu = 0; // View: 0 = Gallery, 1 = List
@@ -198,6 +198,8 @@ function switchState() {
 }
 
 function switchView() {
+	let txt = switcher.querySelector(".res-fltr-all-txt");
+	// Gallery to List
 	if(curVu == 0) {
 		curVu = 1;
 		contDiv.style.transform = "translateX(-100%)";
@@ -206,7 +208,10 @@ function switchView() {
 		// List
 		if(curSt == 0) {lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem"}
 		else {lstDiv.style.maxHeight = lstMaxH}
+		// Switcher
+		opacity0(txt); setTimeout(function() {txt.innerText = "View Gallery"; opacity1(txt)}, 400);
 	}
+	// List to Gallery
 	else {
 		curVu = 0;
 		contDiv.style.transform = "translateX(0%)";
@@ -217,9 +222,20 @@ function switchView() {
 		galMaxH = "" + (galNum * galImgH / 32 + galNum) + "rem";
 		// List
 		lstDiv.style.maxHeight = "0rem";
+		// Switcher
+		opacity0(txt); setTimeout(function() {txt.innerText = "View All"; opacity1(txt)}, 400);
 	}
 	galDiv.style.maxHeight = galMaxH;
 }
+
+// View all
+/*switcher.addEventListener('click', function() {
+	let txt = switcher.querySelector(".res-fltr-all-txt");
+	if(curVu == 0) {opacity0(txt); setTimeout(function() {txt.innerText = "View Gallery"; opacity1(txt)}, 400)}
+	else {opacity0(txt); setTimeout(function() {txt.innerText = "View All"; opacity1(txt)}, 400)}
+	switchView();
+});*/
+switcher.addEventListener('click', switchView);
 
 // Filter reset
 document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
@@ -248,7 +264,5 @@ for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
 }
 
-// Switch view trigger
-svTrigger.addEventListener('click', switchView);
-
 //window.addEventListener('resize', updateMaxH);
+for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
