@@ -36,8 +36,8 @@ function changeSlide() {
 	if(curIt == lstArr.length) {curIt = lstArr.length - 1; return}
 	// Shrink other items + expand newItem if needed + slide
 	for(let i = 0; i < lstArr.length; i++) {
-		if(lstArr[i] != lstArr[curIt]) {/*lstArr[i].style.maxHeight = "0rem"*/lstItem(lstArr[i], 0)}
-		else {/*lstArr[i].style.maxHeight = "125rem"*/lstItem(lstArr[i], 2)}
+		if(lstArr[i] != lstArr[curIt]) {lstItem(lstArr[i], 0)}
+		else {lstItem(lstArr[i], 2)}
 	}
 	lstSldr.style.transform = "translateX(-" + curIt * 100 + "%)";
 	// Recalculate lstMaxH + expand all with lstMaxH
