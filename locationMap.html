@@ -26,8 +26,10 @@
 
 	const mapCats = document.getElementsByClassName("map-category");
 	const mapItems = document.getElementsByClassName("map-item");
+	const mapLists = document.getElementsByClassName("map-item-list");
 	const slxMarker = {type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [-84.309, 33.891]}}]}
 	var geojson = {type: "FeatureCollection", features: []}
+	var catNums = [];
 	var markers = [];
 
 	// Crete new map
@@ -39,22 +41,26 @@
 		zoom: 14
 	});
 
-	// Open/Close category lists
 	function openCloseCat(cat) {
-		for(let i = 0; i < mapCats.length; i++) {
-			let maxH = "" + Number(getComputedStyle(mapItems[0]).height.replace(/[^\d\.-]/g, '') * listNum / 16 + "rem";
-			if(mapCats[i].textContent == cat) {
+		let listNum = 0;
+		for(let i = 0; i < catNums.length; i++) {
+			if(catNums[i][0] == cat) {listNum = catNums[i][1]; break}
+		}
+		// MaxH = computed height of a list item * #elements in category / 16 (rem) + 0.875 (padding)
+		let maxH = "" + (Number(getComputedStyle(mapItems[0]).height.replace(/[^\d\.-]/g, '')) * listNum / 16 + 0.875) + "rem";
+		for(let i = 0; i < mapLists.length; i++) {
+			if(mapLists[i].querySelector(".map-item-embed").dataset.cat == cat) {
 				// Open list
-				mapCats[i].style.maxHeight = maxH;
-				mapCats[i].style.paddingBottom = "0.875em"
+				mapLists[i].style.maxHeight = maxH;
+				mapLists[i].style.paddingBottom = "0.875rem"
 			}
 			else {
 				// Close list
-				mapCats[i].style.transition = "all 0ms";
-				mapCats[i].style.maxHeight = maxH;
-				mapCats[i].style.transition = "all 400ms";
-				mapCats[i].style.paddingBottom = "0em";
-				mapCats[i].style.maxHeight = "0rem"
+				mapLists[i].style.transition = "all 0ms";
+				mapLists[i].style.maxHeight = maxH;
+				mapLists[i].style.transition = "all 200ms";
+				mapLists[i].style.paddingBottom = "0rem";
+				mapLists[i].style.maxHeight = "0rem"
 			}
 		}
 	}
@@ -64,7 +70,7 @@
 		for(let i = 0; i < markers.length; i++) {
 			if(cat == "All") {markers[i].style.display = "block"}
 			else if(markers[i].dataset.cat != cat) {markers[i].style.display = "none"}
-			else {markers[i].stye.display = "block"}
+			else {markers[i].style.display = "block"}
 		}
 	}
 
@@ -82,16 +88,7 @@
 			el.style.backgroundColor = marker.color;
 			el.setAttribute('data-cat', marker.category);
 			el.style.transition = "all 400ms";
-			// Sort into markers[] by category
-			if(markers.length == 0) {markers.push({marker.category: [el]})}
-			else {
-				let newCat = true;
-				for(let i = 0; i < markers.length; i++) {
-					if(marker.category == markers[i]) {markers[i].push(el); newCat = false; break}
-				}
-				if(newCat == true) {markers.push({marker.category: [el]})}
-			}
-			//markers.push(el)
+			markers.push(el)
 			}
 		else {new mapboxgl.Marker(el).setLngLat(marker.geometry.coordinates).addTo(map)}
 	}
@@ -99,6 +96,7 @@
 	// Collect data from map items + push to geojson[] as marker object
 	for(let i = 0; i < mapItems.length; i++) {
 		let data = mapItems[i].querySelector(".map-item-embed").dataset;
+		// Create + push new marker data object
 		geojson.features.push({
 			type: "Feature",
 			geometry: {
@@ -111,6 +109,14 @@
 			category: data.cat,
 			color: data.color,
 		});
+		// Add current item to the corresponding category's count
+		if(catNums.length == 0) {catNums.push([data.cat, 1])}
+		else if(!catNums.includes(data.cat)) {catNums.push([data.cat, 1])}
+		else {
+			for(let j = 0; j < catNums.length; j++) {
+				if(catNums[i][0] == data.cat) {catNums[i][1]++; break}
+			}
+		}
 	}
 
 	// Create SLX marker
