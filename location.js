@@ -85,6 +85,9 @@ function scrollEventDown() {
 	if(currentSection == 0) {
 		heroOverlay.style.opacity = "0";
 		heroOverlay.style.filter = "alpha(opacity=0)"; // For IE
+		setTimeout(function() {
+			heroOverlay.style.display = "none"
+		}, 750);
 		currentSection = 1;
 	}
 	else if(currentSection < totalSections) {
@@ -94,6 +97,7 @@ function scrollEventDown() {
 
 function scrollEventUp() {
 	if(currentSection == 1 && heroOverlay != undefined) {
+		heroOverlay.style.display = "flex";
 		heroOverlay.style.opacity = "1";
 		heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
 		currentSection = 0;
