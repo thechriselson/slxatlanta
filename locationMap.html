@@ -24,6 +24,7 @@
 
 <script>
 
+	const mapCats = document.getElementsByClassName("map-category");
 	const mapItems = document.getElementsByClassName("map-item");
 	const slxMarker = {type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [-84.309, 33.891]}}]}
 	var geojson = {type: "FeatureCollection", features: []}
@@ -38,22 +39,61 @@
 		zoom: 14
 	});
 
+	// Open/Close category lists
+	function openCloseCat(cat) {
+		for(let i = 0; i < mapCats.length; i++) {
+			let maxH = "" + Number(getComputedStyle(mapItems[0]).height.replace(/[^\d\.-]/g, '') * listNum / 16 + "rem";
+			if(mapCats[i].textContent == cat) {
+				// Open list
+				mapCats[i].style.maxHeight = maxH;
+				mapCats[i].style.paddingBottom = "0.875em"
+			}
+			else {
+				// Close list
+				mapCats[i].style.transition = "all 0ms";
+				mapCats[i].style.maxHeight = maxH;
+				mapCats[i].style.transition = "all 400ms";
+				mapCats[i].style.paddingBottom = "0em";
+				mapCats[i].style.maxHeight = "0rem"
+			}
+		}
+	}
+
+	// Filter markers
+	function filterMarkers(cat) {
+		for(let i = 0; i < markers.length; i++) {
+			if(cat == "All") {markers[i].style.display = "block"}
+			else if(markers[i].dataset.cat != cat) {markers[i].style.display = "none"}
+			else {markers[i].stye.display = "block"}
+		}
+	}
+
 	// Create new marker
 	function createMarker(marker, className, popup) {
-		let el = document.createElement("div");
+		let el = document.createElement('div');
 		el.className = className;
 		if(popup) {
 			new mapboxgl.Marker(el)
 				.setLngLat(marker.geometry.coordinates)
 				.setPopup(new mapboxgl.Popup({offset: 25})
-					.setHTML("<p>" + marker.properties.title + "</p>"))
-				.addTo(map)
+					.setHTML('<p>' + marker.properties.title + '</p>'))
+				.addTo(map);
+			// Set color + assign category data to new element + push to array
+			el.style.backgroundColor = marker.color;
+			el.setAttribute('data-cat', marker.category);
+			el.style.transition = "all 400ms";
+			// Sort into markers[] by category
+			if(markers.length == 0) {markers.push({marker.category: [el]})}
+			else {
+				let newCat = true;
+				for(let i = 0; i < markers.length; i++) {
+					if(marker.category == markers[i]) {markers[i].push(el); newCat = false; break}
+				}
+				if(newCat == true) {markers.push({marker.category: [el]})}
+			}
+			//markers.push(el)
 			}
 		else {new mapboxgl.Marker(el).setLngLat(marker.geometry.coordinates).addTo(map)}
-		// Set color + assign category data to new element + push to array
-		el.style.backgroundColor = marker.color;
-		el.setAttribute("data-cat", marker.category);
-		markers.push(el)
 	}
 
 	// Collect data from map items + push to geojson[] as marker object
@@ -73,8 +113,19 @@
 		});
 	}
 
+	// Create SLX marker
 	createMarker(slxMarker.features[0], "slx-marker", false);
 
+	// Create all location markers
 	for(let i = 0; i < geojson.features.length; i++) {createMarker(geojson.features[i], "map-marker", true)}
+
+	// Category names onClick
+	for(let i = 0; i < mapCats.length; i++) {
+		mapCats[i].addEventListener('click', function() {
+			// Expand items list + filter markers
+			openCloseCat(mapCats[i].textContent);
+			filterMarkers(mapCats[i].textContent)
+		})
+	}
 
 </script>
