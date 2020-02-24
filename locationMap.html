@@ -1,0 +1,80 @@
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css" rel="stylesheet" />
+
+<style>
+
+	.slx-marker {
+		background-image: url("https://uploads-ssl.webflow.com/5e0cc5b73f3d9576faa5719a/5e4fc0527fa93b7c3adc616a_SLX%20Map%20Marker.svg");
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		width: 4rem;
+		height: 4rem;
+	}
+
+	.map-marker {
+		background-color: white;
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 50%;
+		cursor: pointer;
+	}
+
+</style>
+
+<script>
+
+	const mapItems = document.getElementsByClassName("map-item");
+	const slxMarker = {type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [-84.309, 33.891]}}]}
+	var geojson = {type: "FeatureCollection", features: []}
+	var markers = [];
+
+	// Crete new map
+	mapboxgl.accessToken = "pk.eyJ1IjoidGhlY2hyaXNlbHNvbiIsImEiOiJjazY2aWMwYW4wNHN3M2xwajVwdXg5bnZwIn0.qN17abkQA21Ry6Bu2PbMBA";
+	var map = new mapboxgl.Map({
+		container: "mapContainer",
+		style: "mapbox://styles/thechriselson/ck6uy74br02al1io4dynodeq8",
+		center: [-84.309, 33.891],
+		zoom: 14
+	});
+
+	// Create new marker
+	function createMarker(marker, className, popup) {
+		let el = document.createElement("div");
+		el.className = className;
+		if(popup) {
+			new mapboxgl.Marker(el)
+				.setLngLat(marker.geometry.coordinates)
+				.setPopup(new mapboxgl.Popup({offset: 25})
+					.setHTML("<p>" + marker.properties.title + "</p>"))
+				.addTo(map)
+			}
+		else {new mapboxgl.Marker(el).setLngLat(marker.geometry.coordinates).addTo(map)}
+		// Set color + assign category data to new element + push to array
+		el.style.backgroundColor = marker.color;
+		el.setAttribute("data-cat", marker.category);
+		markers.push(el)
+	}
+
+	// Collect data from map items + push to geojson[] as marker object
+	for(let i = 0; i < mapItems.length; i++) {
+		let data = mapItems[i].querySelector(".map-item-embed").dataset;
+		geojson.features.push({
+			type: "Feature",
+			geometry: {
+				type: "Point",
+				coordinates: [data.lng, data.lat]
+			},
+			properties: {
+				title: data.name
+			},
+			category: data.cat,
+			color: data.color,
+		});
+	}
+
+	createMarker(slxMarker.features[0], "slx-marker", false);
+
+	for(let i = 0; i < geojson.features.length; i++) {createMarker(geojson.features[i], "map-marker", true)}
+
+</script>
