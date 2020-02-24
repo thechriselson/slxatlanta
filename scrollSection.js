@@ -98,9 +98,11 @@ function scrollEventDown() {
 function scrollEventUp() {
 	if(currentSection == 1 && heroOverlay != undefined) {
 		heroOverlay.style.display = "flex";
-		heroOverlay.style.opacity = "1";
-		heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
-		currentSection = 0;
+		setTimeout(function() {
+			heroOverlay.style.opacity = "1";
+			heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
+			currentSection = 0;
+		}, 100)
 	}
 	else if(currentSection > 1) {
 		scrollSectionUp();
