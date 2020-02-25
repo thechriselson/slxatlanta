@@ -5,6 +5,7 @@
 const heroOverlay = document.getElementById("heroOverlay");
 const scrollBgArray = document.getElementsByClassName("sl-bg-cont");
 const scrollTextArray = document.getElementsByClassName("scroll-section");
+const sectionLinks = document.getElementsByClassName("sl-s-links-col-item");
 
 var time = 0;
 const wait = 1500;
@@ -175,6 +176,19 @@ swipeEvent(el, function(swipeDir) {
 		scrollEventUp();
 	}
 });
+
+for(let i = 0; i < sectionLinks.length; i++) {
+	sectionLinks[i].addEventListener('click', function() {
+		// Identify corresponding section + set currentSection + scroll up or down
+		for(let j = 0; j < scrollBgArray.length; j++) {
+			if(sectionLinks[i].querySelector(".sl-s-link").textContent == scrollBgArray[j].querySelector(".sl-bg-embed").dataset.title) {
+				let sectionNum = j;
+				if(j < currentSection) {currentSection = j; scrollSectionDown(); break}
+				else if(j > currentSection) {currentSection = j + 2; scrollSectionUp(); break}
+			}
+		}
+	})
+}
 
 var bigScreen = window.matchMedia("(min-width: 992px)");
 window.addEventListener('resize', () => {
