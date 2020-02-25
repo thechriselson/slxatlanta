@@ -56,6 +56,23 @@ function colorChange() {
 	}
 }
 
+function overlayFadeout() {
+	heroOverlay.style.opacity = "0";
+	heroOverlay.style.filter = "alpha(opacity=0)"; // For IE
+	setTimeout(function() {
+		heroOverlay.style.display = "none"
+	}, 750)
+}
+
+function overlayFadein() {
+	heroOverlay.style.display = "flex";
+	setTimeout(function() {
+		heroOverlay.style.opacity = "1";
+		heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
+		currentSection = 0;
+	}, 100)
+}
+
 function scrollSectionDown() {
 	for(var i = 0; i < scrollBgArray.length; i++) {
 		scrollBgArray[i].style.transform = "translateY(" + currentSection * -100 + "%)";
@@ -84,11 +101,12 @@ function scrollSectionUp() {
 
 function scrollEventDown() {
 	if(currentSection == 0) {
-		heroOverlay.style.opacity = "0";
+		/*heroOverlay.style.opacity = "0";
 		heroOverlay.style.filter = "alpha(opacity=0)"; // For IE
 		setTimeout(function() {
 			heroOverlay.style.display = "none"
-		}, 750);
+		}, 750);*/
+		overlayFadeout();
 		currentSection = 1;
 	}
 	else if(currentSection < totalSections) {
@@ -98,12 +116,13 @@ function scrollEventDown() {
 
 function scrollEventUp() {
 	if(currentSection == 1 && heroOverlay != undefined) {
-		heroOverlay.style.display = "flex";
+		/*heroOverlay.style.display = "flex";
 		setTimeout(function() {
 			heroOverlay.style.opacity = "1";
 			heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
 			currentSection = 0;
-		}, 100)
+		}, 100)*/
+		overlayFadein()
 	}
 	else if(currentSection > 1) {
 		scrollSectionUp();
@@ -183,7 +202,7 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 	let bgColor = "black";
 	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
 	scrollBgArray[i].style.backgroundColor = bgColor;
-	if(data.padded = true) {scrollBgArray[i].className += " padded"}
+	if(data.padded = "Yes") {scrollBgArray[i].className += " padded"}
 }
 
 for(let i = 0; i < sectionLinks.length; i++) {
@@ -192,6 +211,7 @@ for(let i = 0; i < sectionLinks.length; i++) {
 		for(let j = 0; j < scrollBgArray.length; j++) {
 			if(sectionLinks[i].querySelector(".sl-s-link").textContent == scrollBgArray[j].querySelector(".sl-bg-embed").dataset.title) {
 				let k = j + 1;
+				if(currentSection == 0) {overlayFadeout()}
 				if(k < currentSection) {currentSection = k - 1; scrollSectionDown(); break}
 				else if(k > currentSection) {currentSection = k + 1; scrollSectionUp(); break}
 			}
