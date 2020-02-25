@@ -88,7 +88,7 @@ for(let i = 0; i < mapItems.length; i++) {
 	else if(!catNums.includes(data.cat)) {catNums.push([data.cat, 1])}
 	else {
 		for(let j = 0; j < catNums.length; j++) {
-			if(catNums[i][0] == data.cat) {catNums[i][1]++; break}
+			if(catNums[i][0] == data.cat) {catNums[i][1] = catNums[i][1] + 1; break}
 		}
 	}
 }
