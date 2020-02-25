@@ -30,8 +30,10 @@ function colorChange() {
 	var cs = currentSection - 1; // - 1 to correlate with array starting at 0
 	if(cs == -1) {cs = 0;}
 	// Change navLink colors
-	if(scrollBgArray[cs].dataset.navcolor) {
+	let newNavColor = scrollBgArray[cs].querySelector(".sl-bg-embed").dataset.navcolor;
+	if(scrollBgArray[cs].dataset.navcolor || newNavColor) {
 		const navColor = scrollBgArray[cs].dataset.navcolor;
+		if(newNavColor) {navColor = newNavColor}
 		const sectionStyle = getComputedStyle(scrollBgArray[cs]);
 		// Change navMenu's bg color based on the current section: to black if transparent bg or to match section's bg
 		if(window.matchMedia("(max-width: 991px)").matches) {
@@ -202,7 +204,7 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 	let bgColor = "black";
 	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
 	scrollBgArray[i].style.backgroundColor = bgColor;
-	if(data.padded = "Yes") {scrollBgArray[i].className += " padded"}
+	if(data.padded == "Yes") {scrollBgArray[i].className += " padded"}
 }
 
 for(let i = 0; i < sectionLinks.length; i++) {
