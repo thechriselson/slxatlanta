@@ -177,14 +177,23 @@ swipeEvent(el, function(swipeDir) {
 	}
 });
 
+// Apply visual variable changes
+for(let i = 0; i < scrollBgArray.length; i++) {
+	let data = scrollBgArray[i].querySelector(".sl-bg-embed").dataset;
+	let bgColor = "black";
+	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
+	scrollBgArray[i].style.backgroundColor = bgColor;
+	if(data.padded = true) {scrollBgArray[i].className += " padded"}
+}
+
 for(let i = 0; i < sectionLinks.length; i++) {
 	sectionLinks[i].addEventListener('click', function() {
 		// Identify corresponding section + set currentSection + scroll up or down
 		for(let j = 0; j < scrollBgArray.length; j++) {
 			if(sectionLinks[i].querySelector(".sl-s-link").textContent == scrollBgArray[j].querySelector(".sl-bg-embed").dataset.title) {
-				let sectionNum = j;
-				if(j < currentSection) {currentSection = j; scrollSectionDown(); break}
-				else if(j > currentSection) {currentSection = j + 2; scrollSectionUp(); break}
+				let k = j + 1;
+				if(k < currentSection) {currentSection = k - 1; scrollSectionDown(); break}
+				else if(k > currentSection) {currentSection = k + 1; scrollSectionUp(); break}
 			}
 		}
 	})
