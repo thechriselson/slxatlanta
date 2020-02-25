@@ -3,7 +3,7 @@
 ////////////////////
 
 const heroOverlay = document.getElementById("heroOverlay");
-const scrollBgArray = document.getElementsByClassName("slider-bg-container");
+const scrollBgArray = document.getElementsByClassName("sl-bg-cont");
 const scrollTextArray = document.getElementsByClassName("scroll-section");
 
 var time = 0;
