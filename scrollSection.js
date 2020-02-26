@@ -41,15 +41,13 @@ function colorChange() {
 		// Change each navLink to current navColor
 		for(var i = 0; i < navLinkArray.length; i++) {navLinkArray[i].style.color = navColor;}
 		// Change navLogo images to associated color version
-		if(navColor == "black") {
+		if(navColor == "black" || navColor == "Black") {
 			navLogo.src = navLogoBlack;
 			navLogoMob.src = navLogoMobBlack;
-			//navLinkCurrent.style.borderBottomColor = "black";
 		}
-		else if(navColor == "white") {
+		else if(navColor == "white" || navColor == "White") {
 			navLogo.src = navLogoWhite;
 			navLogoMob.src = navLogoMobWhite;
-			//navLinkCurrent.style.borderBottomColor = "red";
 		}
 		// Change navMenuIcon color
 		for(var j = 0; j < navMenuIconArray.length; j++) {navMenuIconArray[j].style.backgroundColor = navColor;}
