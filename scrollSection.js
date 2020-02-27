@@ -198,7 +198,11 @@ swipeEvent(el, function(swipeDir) {
 for(let i = 0; i < scrollBgArray.length; i++) {
 	let data = scrollBgArray[i].querySelector(".sl-bg-embed").dataset;
 	let bgColor = "black";
+	let bgPos = [,];
 	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
+	if(data.posx != undefined) {bgPos[0] = data.posx}
+	if(data.posy != undefined) {bgPos[1] = data.posy}
+	if(bgPos.includes("")) {scrollBgArray[i].style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%"}
 	scrollBgArray[i].style.backgroundColor = bgColor;
 	if(data.padded == "Yes") {scrollBgArray[i].className += " padded"}
 }
