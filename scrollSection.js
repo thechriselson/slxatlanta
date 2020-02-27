@@ -197,13 +197,17 @@ swipeEvent(el, function(swipeDir) {
 // Apply visual variable changes
 for(let i = 0; i < scrollBgArray.length; i++) {
 	let data = scrollBgArray[i].querySelector(".sl-bg-embed").dataset;
+	let bgDiv = scrollBgArray[i].querySelector(".sl-bg")
 	let bgColor = "black";
-	let bgPos = [,];
+	let bgPos = [50, 50];
+	// BG color
 	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
-	if(data.posx != undefined) {bgPos[0] = data.posx}
-	if(data.posy != undefined) {bgPos[1] = data.posy}
-	if(bgPos.includes("")) {scrollBgArray[i].style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%"}
 	scrollBgArray[i].style.backgroundColor = bgColor;
+	// BG image pos
+	if(data.posx.length > 0) {bgPos[0] = Number(data.posx)}
+	if(data.posy.length > 0) {bgPos[1] = Number(data.posy)}
+	bgDiv.style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%";
+	// Padding
 	if(data.padded == "Yes") {scrollBgArray[i].className += " padded"}
 }
 
