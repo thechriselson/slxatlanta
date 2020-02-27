@@ -99,12 +99,12 @@ function scrollSectionUp() {
 
 function scrollEventDown() {
 	if(currentSection == 0) {
-		/*heroOverlay.style.opacity = "0";
+		heroOverlay.style.opacity = "0";
 		heroOverlay.style.filter = "alpha(opacity=0)"; // For IE
 		setTimeout(function() {
 			heroOverlay.style.display = "none"
-		}, 750);*/
-		overlayFadeout();
+		}, 750);
+		//overlayFadeout();
 		currentSection = 1;
 	}
 	else if(currentSection < totalSections) {
@@ -114,13 +114,13 @@ function scrollEventDown() {
 
 function scrollEventUp() {
 	if(currentSection == 1 && heroOverlay != undefined) {
-		/*heroOverlay.style.display = "flex";
+		heroOverlay.style.display = "flex";
 		setTimeout(function() {
 			heroOverlay.style.opacity = "1";
 			heroOverlay.style.filter = "alpha(opacity=100)"; // For IE
 			currentSection = 0;
-		}, 100)*/
-		overlayFadein()
+		}, 100)
+		//overlayFadein()
 	}
 	else if(currentSection > 1) {
 		scrollSectionUp();
