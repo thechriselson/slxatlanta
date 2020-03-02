@@ -201,12 +201,16 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 	let bgColor = "black";
 	let bgPos = [50, 50];
 	// BG color
-	if(data.bgcolor != undefined) {bgColor = data.bgcolor}
-	scrollBgArray[i].style.backgroundColor = bgColor;
+	if(data.bgcolor != "Ignore") {
+		if(data.bgcolor != undefined) {bgColor = data.bgcolor}
+		scrollBgArray[i].style.backgroundColor = bgColor
+	}
 	// BG image pos
-	if(data.posx.length > 0) {bgPos[0] = Number(data.posx)}
-	if(data.posy.length > 0) {bgPos[1] = Number(data.posy)}
-	bgDiv.style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%";
+	if(data.posx != "Ignore" && data.posy != "Ignore") {
+		if(data.posx.length > 0) {bgPos[0] = Number(data.posx)}
+		if(data.posy.length > 0) {bgPos[1] = Number(data.posy)}
+		bgDiv.style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%"
+	}
 	// Padding
 	if(data.padded == "Yes") {scrollBgArray[i].className += " padded"}
 }

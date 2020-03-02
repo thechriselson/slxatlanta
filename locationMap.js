@@ -85,11 +85,12 @@ for(let i = 0; i < mapItems.length; i++) {
 	});
 	// Add current item to the corresponding category's count
 	if(catNums.length == 0) {catNums.push([data.cat, 1])}
-	else if(!catNums.includes(data.cat)) {catNums.push([data.cat, 1])}
 	else {
+		let newCat = true;
 		for(let j = 0; j < catNums.length; j++) {
-			if(catNums[i][0] == data.cat) {catNums[i][1] = catNums[i][1] + 1; break}
+			if(catNums[j][0] == data.cat) {catNums[j][1] = catNums[j][1] + 1; newCat = false; break}
 		}
+		if(newCat == true) {catNums.push([data.cat, 1])}
 	}
 }
 
