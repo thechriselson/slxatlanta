@@ -12,7 +12,7 @@ var map = new mapboxgl.Map({
 	container: "mapContainer",
 	style: "mapbox://styles/thechriselson/ck6uy74br02al1io4dynodeq8",
 	center: [-84.309, 33.891],
-	zoom: 14
+	zoom: 13
 });
 
 function openCloseCat(cat) {
@@ -94,11 +94,11 @@ for(let i = 0; i < mapItems.length; i++) {
 	}
 }
 
-// Create SLX marker
-createMarker(slxMarker.features[0], "slx-marker", false);
-
 // Create all location markers
 for(let i = 0; i < geojson.features.length; i++) {createMarker(geojson.features[i], "map-marker", true)}
+
+// Create SLX marker
+createMarker(slxMarker.features[0], "slx-marker", false);
 
 // Category names onClick
 for(let i = 0; i < mapCats.length; i++) {
