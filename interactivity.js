@@ -11,7 +11,9 @@ const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
-const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice")]; // Add move-in-date
+const datePicker = document.getElementById("filterDate").querySelector(".date-input-native");
+if(datePicker.style.display == "none") {datePicker = document.getElementById("filterDate").querySelector(".date-input-fallback")}
+const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), datePicker]; // Add move-in-date
 var actvFltrs = [];
 
 // Switcher
