@@ -9,6 +9,9 @@ var xhr = new XMLHttpRequest();
 var dataReady = false;
 var unitTypes = [];
 var units = [];
+var apts = [];
+
+const sitemapLayers = document.getElementsByClassName("res-map-col-item");
 
 function priceRange(price) {
 	if(price < 1501) {return 1}
@@ -42,7 +45,23 @@ function populateApts() {
 			txtArr[3].innerText = "Starting at $" + units[i][j][3][0];
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
+			apts.push(newApt);
 		}
+	}
+	// Residences apts sitemap layers
+	for(let i = 0; i < sitemapLayers.length; i++) {
+		let layerMatch = false;
+		let aptNum = sitemapLayers[i].querySelector(".res-map-data").dataset.apt;
+		let avaiSVG = sitemapLayers[i].querySelector(".res-map-svg.avai");
+		let unavaiSVG = sitemapLayers[i].querySelector(".res-map-svg.unavai");
+		// Cycle through each apts[] to find the matching listing
+		for(let j = 0; j < apts.length; j++) {
+			let aptTxt = apts[j].querySelector(".res-lst-apt-txt.apt").textContent;
+			if(aptTxt.includes(aptNum)) {layerMatch = true; break}	
+		}
+		// If a match is found, display avaiSVG. If not, display unavaiSVG
+		if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
+		else {unavaiSVG.style.display = "inline-block"}
 	}
 }
 
@@ -103,7 +122,6 @@ xhr.addEventListener('readystatechange', function() {
 		}
 		populateApts();
 		if(curSt == 1) {changeSlide()}
-		//changeSlide();
 		dataReady = true;
 		for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].disabled = false}
 	}

@@ -10,11 +10,15 @@ const lstArr = document.getElementsByClassName("res-lst-col-item");
 const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
+// Sitemap layers
+const sitemaps = document.getElementsByClassName("");
+const sitemapLayers = document.getElementsByClassName("");
+
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
-const datePicker = document.getElementById("filterDate").querySelector(".date-input-native");
-if(datePicker.style.display == "none") {datePicker = document.getElementById("filterDate").querySelector(".date-input-fallback")}
-const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), datePicker]; // Add move-in-date
+const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), document.getElementById("filterDate")];
 var actvFltrs = [];
+
+console.log(fltrArr);
 
 // Switcher
 const switcher = document.querySelector(".res-fltr-all-div");
@@ -248,6 +252,7 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 // Filter selectors
 for(let i = 0; i < fltrArr.length; i++) {
 	fltrArr[i].addEventListener('change', function() {
+		console.log(fltrArr[i].value);
 		actvFltrs[i] = fltrArr[i].value;
 		filter();
 	})
