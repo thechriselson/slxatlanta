@@ -11,7 +11,7 @@ var unitTypes = [];
 var units = [];
 var apts = [];
 
-const sitemapLayers = document.getElementsByClassName("res-map-col-item");
+//const sitemapLayers = document.getElementsByClassName("res-map-col-item");
 
 function priceRange(price) {
 	if(price < 1501) {return 1}

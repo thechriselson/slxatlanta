@@ -14,6 +14,9 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 const sitemaps = document.getElementsByClassName("");
 const sitemapLayers = document.getElementsByClassName("");
 
+// Filter datepicker
+const picker = datepicker("#filterDate");
+
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), document.getElementById("filterDate")];
 var actvFltrs = [];
