@@ -59,8 +59,8 @@ function populateApts() {
 		// Cycle through each apts[] to find the matching listing
 		for(let j = 0; j < apts.length; j++) {
 			if(layerMatch == true) {break}
-			for(let k = 0; k < apts[i].length; k++) {
-				let aptTxt = apts[j].querySelector(".res-lst-apt-txt.apt").textContent;
+			for(let k = 0; k < apts[j].length; k++) {
+				let aptTxt = apts[j][k].querySelector(".res-lst-apt-txt.apt").textContent;
 				if(aptTxt.includes(aptNum)) {layerMatch = true; break}
 			}	
 		}
