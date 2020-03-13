@@ -45,7 +45,8 @@ function populateApts() {
 			txtArr[3].innerText = "Starting at $" + units[i][j][3][0];
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
-			apts.push(newApt);
+			// Store newApt(s) relative to their parent unit type
+			apts[i].push(newApt)
 		}
 	}
 	// Residences apts sitemap layers
