@@ -46,6 +46,7 @@ function populateApts() {
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
 			// Store newApt(s) relative to their parent unit type
+			apts.push([]);
 			apts[i].push(newApt)
 		}
 	}

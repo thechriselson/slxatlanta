@@ -11,11 +11,22 @@ const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Sitemap layers
-const sitemaps = document.getElementsByClassName("");
-const sitemapLayers = document.getElementsByClassName("");
+//const sitemaps = document.getElementsByClassName("");
+const sitemapLayers = document.getElementsByClassName("res-map-col-item");
 
 // Filter datepicker
-const picker = datepicker("#filterDate");
+const picker = datepicker("#filterDate", {
+	onSelect: (instance, date) => {
+		// Convert date input to MM/DD/yyyy
+		let year = date.getFullYear();
+		let month = (1 + date.getMonth()).toString();
+		if(month.length == 1) {month = "0" + month}
+		let day = date.getDate().toString();
+		if(day.length == 1) {day = "0" + day}
+		// Add selected date to actvFltrs[]
+		actvFltrs[3] = month + "/" + day + "/" + year
+	}
+});
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), document.getElementById("filterDate")];
@@ -135,7 +146,7 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
-function filterCheck(item, attrs, aptAttrs) {
+/*function filterCheck(item, attrs, aptAttrs) {
 	// If API data is ready, check against unitTypes[]
 	if(dataReady == true) {
 		let checkArr = [[], [], [], []];
@@ -147,6 +158,7 @@ function filterCheck(item, attrs, aptAttrs) {
 				else {checkArr[i-1].push(false)}
 			}
 		}
+		// Check against actvFltr[3] (move-in-date)
 		for(let i = 0; i < checkArr.length; i++) {
 			if(!checkArr[i].includes(false)) {item.dataset.filter = "true"; break}
 			else {item.dataset.filter = "false"}
@@ -163,6 +175,52 @@ function filterCheck(item, attrs, aptAttrs) {
 	// Set list item state based on data-filter value
 	if(item.dataset.filter == "true") {lstItem(item, 0)}
 	else {lstItem(item, 1)}
+}*/
+
+function filterCheck(item, unitType, units, apts) {
+	if(dataReady == true) {
+		let aptVis = [];
+		// For each unit of unitType
+		for(let i = 0; i < units.length; i++) {
+			// #beds
+			if(Number(actvFltrs[0] != unitType[1])) {aptVis[i] = false; break}
+			// Floor#
+			if(Number(actvFltrs[1]) != units[i][1]) {aptVis[i] = false; break}
+			// Price range
+			let hidden = false;
+			for(let j = 0; j < 2; j++) {if(Number(actvFltrs[2][j]) != units[i][3][j]) {hidden = true}}
+			if(hidden == true) {aptVis[i] = false; break}
+			// Move-in-date
+			let fltrDate = actvFltrs[3].split("/");
+			let avaiDate = units[i][2].split("/");
+			// Year
+			if(Number(fltrDate[2]) > Number(avaiDate[2])) {aptVis[i] = false; break}
+			else if(Number(fltrDate[2]) < Number(avaiDate[2])) {}
+			// Month
+			else if(Number(fltrDate[0]) > Number(avaiDate[0])) {aptVis[i] = false; break}
+			else if(Number(fltrDate[0]) < Number(avaiDate[0])) {}
+			// Day
+			else if(Number(fltrDate[1]) > Number(avaiDate[1])) {aptVis[i] = false; break}
+			// If unit passes all filters
+			aptVis[i] = true
+		}
+		// Minimise or expand each apts[]
+		for(let i = 0; i < aptVis.length; i++) {
+			console.log(aptVis[i]);
+			if(aptVis[i] == false) {/* minimise apts[i] */}
+			else {/* expand apts[i] */}
+		}
+		if(!aptVis.includes(true)) {item.dataset.filter = "true"}
+		else {item.dataset.filter = "false"}
+	}
+	else {
+		// #beds
+		if(Number(actvFltrs[0]) != unitType[1]) {item.dataset.filter = "true"}
+		else {item.dataset.filter = "false"}
+	}
+	// Minimise or expand list item
+	if(item.dataset.filter == "true") {lstItem(item, 0)}
+	else {lstItem(item, 1)}
 }
 
 function filter() {
@@ -174,9 +232,9 @@ function filter() {
 			let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
 			let tempAttrs = [tempData.name.toUpperCase(), [Number(tempData.beds)]];
 			if(dataReady == true) {
-				// Match current lstArr[i] to correct unitType[j] + filterCheck() 
+				// Match current lstArr[i] to correct unitType[j] + filterCheck()
 				for(let j = 0; j < unitTypes.length; j++) {
-					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j])}
+					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
 				}
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}
@@ -253,10 +311,11 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 });
 
 // Filter selectors
-for(let i = 0; i < fltrArr.length; i++) {
+for(let i = 0; i < fltrArr.length - 1; i++) {
 	fltrArr[i].addEventListener('change', function() {
 		console.log(fltrArr[i].value);
 		actvFltrs[i] = fltrArr[i].value;
+		console.log(actvFltrs);
 		filter();
 	})
 }
