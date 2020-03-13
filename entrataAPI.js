@@ -58,8 +58,11 @@ function populateApts() {
 		let unavaiSVG = sitemapLayers[i].querySelector(".res-map-svg.unavai");
 		// Cycle through each apts[] to find the matching listing
 		for(let j = 0; j < apts.length; j++) {
-			let aptTxt = apts[j].querySelector(".res-lst-apt-txt.apt").textContent;
-			if(aptTxt.includes(aptNum)) {layerMatch = true; break}	
+			if(layerMatch == true) {break}
+			for(let k = 0; k < apts[i].length; k++) {
+				let aptTxt = apts[j].querySelector(".res-lst-apt-txt.apt").textContent;
+				if(aptTxt.includes(aptNum)) {layerMatch = true; break}
+			}	
 		}
 		// If a match is found, display avaiSVG. If not, display unavaiSVG
 		if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
