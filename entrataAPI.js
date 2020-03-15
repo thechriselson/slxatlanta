@@ -51,10 +51,11 @@ function populateApts() {
 	// Residences apts sitemap layers
 	for(let i = 0; i < sitemapLayers.length; i++) {
 		let layerMatch = false;
+		let avaiSVG; let unavaiSVG;
 		for(let j = 0; j < sitemapLayers[i].length; j++) {
 			let aptNum = sitemapLayers[i][j].querySelector(".res-map-data").dataset.apt;
-			let avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
-			let unavaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.unavai");
+			avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
+			unavaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.unavai");
 			// Cycle through each apts[] to find the matching listing
 			for(let k = 0; k < apts.length; k++) {
 				if(layerMatch == true) {break}
