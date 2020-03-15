@@ -54,9 +54,9 @@ function populateApts() {
 	for(let i = 0; i < sitemapLayers.length; i++) {
 		for(let j = 0; j < sitemapLayers[i].length; j++) {
 			let layerMatch = false;
-			let aptNum = sitemapLayers[i].querySelector(".res-map-data").dataset.apt;
-			let avaiSVG = sitemapLayers[i].querySelector(".res-map-svg.avai");
-			let unavaiSVG = sitemapLayers[i].querySelector(".res-map-svg.unavai");
+			let aptNum = sitemapLayers[i][j].querySelector(".res-map-data").dataset.apt;
+			let avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
+			let unavaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.unavai");
 			// Cycle through each apts[] to find the matching listing
 			for(let k = 0; k < apts.length; k++) {
 				if(layerMatch == true) {break}
