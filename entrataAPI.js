@@ -25,6 +25,7 @@ function pushToUnitTypes(i, j, item) {
 }
 
 function populateApts() {
+	console.log(sitemapLayers);
 	for(let i = 0; i < unitTypes.length; i++) {
 		let aptDiv = {}
 		// Match unitTypes[i] to its corresponding list item + store its aptDiv
@@ -33,6 +34,7 @@ function populateApts() {
 			if(aptDiv.dataset.apt.toUpperCase() == unitTypes[i][0][0]) {break}
 		}
 		// For each units[i], clone aptDiv + populate
+		apts.push([]);
 		for(let j = 0; j < units[i].length; j++) {
 			let aptCon = aptDiv.parentNode
 			let newApt = aptDiv.cloneNode(true);
@@ -44,30 +46,29 @@ function populateApts() {
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
 			// Store newApt(s) relative to their parent unit type
-			apts.push([]);
 			apts[i].push(newApt)
 		}
 	}
-	// Residences apts sitemap layers
+	// Set avai or unavai SVGs for each sitemap layer
 	for(let i = 0; i < sitemapLayers.length; i++) {
-		let layerMatch = false;
-		let avaiSVG; let unavaiSVG;
 		for(let j = 0; j < sitemapLayers[i].length; j++) {
+			let layerMatch = false;
 			let aptNum = sitemapLayers[i][j].querySelector(".res-map-data").dataset.apt;
-			avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
-			unavaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.unavai");
-			// Cycle through each apts[] to find the matching listing
+			let avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
+			let unavaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.unavai");
+			// Cycle through each group of apts
 			for(let k = 0; k < apts.length; k++) {
 				if(layerMatch == true) {break}
+				// Cycle through each apt in that group to find a match
 				for(let l = 0; l < apts[k].length; l++) {
 					let aptTxt = apts[k][l].querySelector(".res-lst-apt-txt.apt").textContent;
 					if(aptTxt.includes(aptNum)) {layerMatch = true; break}
-				}	
+				}
 			}
+			// If match is found, display avaiSVG. If not, display unavaiSVG
+			if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
+			else {unavaiSVG.style.display = "inline-block"}
 		}
-		// If a match is found, display avaiSVG. If not, display unavaiSVG
-		if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
-		else {unavaiSVG.style.display = "inline-block"}
 	}
 }
 
