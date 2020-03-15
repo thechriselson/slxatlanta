@@ -11,8 +11,10 @@ const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
 // Sitemap layers
-//const sitemaps = document.getElementsByClassName("");
-const sitemapLayers = document.getElementsByClassName("res-map-col-item");
+const sitemaps = document.getElementsByClassName("res-map-sitemap");
+var sitemapLayers = [];
+for(let i = 0; i < sitemaps.length; i++) {sitemapLayers.push(sitemaps[i].nextSibling.querySelectorAll(".res-map-col-item"))}
+//const sitemapLayers = document.getElementsByClassName("res-map-col-item");
 
 // Filter datepicker
 const picker = datepicker("#filterDate", {
@@ -145,7 +147,7 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
-function filterCheck(item, unitType, units, apts) {
+function filterCheck(item, unitType, units, apts, mapLayers) {
 	if(dataReady == true) {
 		let aptVis = [];
 		// For each unit of this unit type
@@ -185,6 +187,10 @@ function filterCheck(item, unitType, units, apts) {
 			apts[i].style.paddingTop = pad;
 			apts[i].style.paddingBottom = pad;
 			apts[i].style.borderTopWidth = bord;
+			if(typeof mapLayers[i] !== 'undefined') {
+				if(aptVis[i] == false) {opacity0(mapLayers[i])}
+				else {opacity1(mapLayers[i])}
+			}
 		}
 		if(aptVis.length > 0 && !aptVis.includes(true)) {item.dataset.filter = "true"}
 		else {item.dataset.filter = "false"}
@@ -210,7 +216,7 @@ function filter() {
 			if(dataReady == true) {
 				// Match current lstArr[i] to correct unitType[j] + filterCheck()
 				for(let j = 0; j < unitTypes.length; j++) {
-					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
+					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j], sitemapLayers[j])}
 				}
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}

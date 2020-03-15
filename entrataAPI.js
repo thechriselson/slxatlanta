@@ -52,17 +52,19 @@ function populateApts() {
 	}
 	// Residences apts sitemap layers
 	for(let i = 0; i < sitemapLayers.length; i++) {
-		let layerMatch = false;
-		let aptNum = sitemapLayers[i].querySelector(".res-map-data").dataset.apt;
-		let avaiSVG = sitemapLayers[i].querySelector(".res-map-svg.avai");
-		let unavaiSVG = sitemapLayers[i].querySelector(".res-map-svg.unavai");
-		// Cycle through each apts[] to find the matching listing
-		for(let j = 0; j < apts.length; j++) {
-			if(layerMatch == true) {break}
-			for(let k = 0; k < apts[j].length; k++) {
-				let aptTxt = apts[j][k].querySelector(".res-lst-apt-txt.apt").textContent;
-				if(aptTxt.includes(aptNum)) {layerMatch = true; break}
-			}	
+		for(let j = 0; j < sitemapLayers[i].length; j++) {
+			let layerMatch = false;
+			let aptNum = sitemapLayers[i].querySelector(".res-map-data").dataset.apt;
+			let avaiSVG = sitemapLayers[i].querySelector(".res-map-svg.avai");
+			let unavaiSVG = sitemapLayers[i].querySelector(".res-map-svg.unavai");
+			// Cycle through each apts[] to find the matching listing
+			for(let k = 0; k < apts.length; k++) {
+				if(layerMatch == true) {break}
+				for(let l = 0; l < apts[k].length; l++) {
+					let aptTxt = apts[k][l].querySelector(".res-lst-apt-txt.apt").textContent;
+					if(aptTxt.includes(aptNum)) {layerMatch = true; break}
+				}	
+			}
 		}
 		// If a match is found, display avaiSVG. If not, display unavaiSVG
 		if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
