@@ -24,15 +24,14 @@ const picker = datepicker("#filterDate", {
 		let day = date.getDate().toString();
 		if(day.length == 1) {day = "0" + day}
 		// Add selected date to actvFltrs[]
-		actvFltrs[3] = month + "/" + day + "/" + year
+		actvFltrs[3] = month + "/" + day + "/" + year;
+		filter()
 	}
 });
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), document.getElementById("filterDate")];
 var actvFltrs = [];
-
-console.log(fltrArr);
 
 // Switcher
 const switcher = document.querySelector(".res-fltr-all-div");
@@ -146,71 +145,48 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
-/*function filterCheck(item, attrs, aptAttrs) {
-	// If API data is ready, check against unitTypes[]
-	if(dataReady == true) {
-		let checkArr = [[], [], [], []];
-		for(let i = 1; i < attrs.length; i++) {
-			if(attrs[i].length == 0 || actvFltrs[i-1] == undefined || actvFltrs[i-1].length == 0) {checkArr[i-1].push(false); continue}
-			let actvFltr = Number(actvFltrs[i-1]);
-			for(let j = 0; j < attrs[i].length; j ++) {
-				if(attrs[i][j] != actvFltr) {checkArr[i-1].push(true)}
-				else {checkArr[i-1].push(false)}
-			}
-		}
-		// Check against actvFltr[3] (move-in-date)
-		for(let i = 0; i < checkArr.length; i++) {
-			if(!checkArr[i].includes(false)) {item.dataset.filter = "true"; break}
-			else {item.dataset.filter = "false"}
-		}
-	}
-	// If API data isn't ready, check against tempAttrs[]
-	else {
-		for(let i = 1; i < attrs.length; i++) {
-			let actvFltr = Number(actvFltrs[i-1]);
-			if(attrs[i] != actvFltr) {item.dataset.filter = "true"; break}
-			else {item.dataset.filter = "false"}
-		}
-	}
-	// Set list item state based on data-filter value
-	if(item.dataset.filter == "true") {lstItem(item, 0)}
-	else {lstItem(item, 1)}
-}*/
-
 function filterCheck(item, unitType, units, apts) {
 	if(dataReady == true) {
 		let aptVis = [];
-		// For each unit of unitType
+		// For each unit of this unit type
 		for(let i = 0; i < units.length; i++) {
-			// #beds
-			if(Number(actvFltrs[0] != unitType[1])) {aptVis[i] = false; break}
-			// Floor#
-			if(Number(actvFltrs[1]) != units[i][1]) {aptVis[i] = false; break}
-			// Price range
-			let hidden = false;
-			for(let j = 0; j < 2; j++) {if(Number(actvFltrs[2][j]) != units[i][3][j]) {hidden = true}}
-			if(hidden == true) {aptVis[i] = false; break}
-			// Move-in-date
-			let fltrDate = actvFltrs[3].split("/");
-			let avaiDate = units[i][2].split("/");
-			// Year
-			if(Number(fltrDate[2]) > Number(avaiDate[2])) {aptVis[i] = false; break}
-			else if(Number(fltrDate[2]) < Number(avaiDate[2])) {}
-			// Month
-			else if(Number(fltrDate[0]) > Number(avaiDate[0])) {aptVis[i] = false; break}
-			else if(Number(fltrDate[0]) < Number(avaiDate[0])) {}
-			// Day
-			else if(Number(fltrDate[1]) > Number(avaiDate[1])) {aptVis[i] = false; break}
-			// If unit passes all filters
-			aptVis[i] = true
+			// Check against each active filter
+			for(let j = 0; j < actvFltrs.length; j ++) {
+				// If no actvFltrs[j], skip
+				if(actvFltrs[j] == undefined || actvFltrs[j].length == 0) {continue}
+				let actvFltr = Number(actvFltrs[j]);
+				// Comparators
+				if(j == 0) {if(actvFltr != unitType[1]) {aptVis[i] = false; break}} // #beds
+				if(j == 1) {if(actvFltr != units[i][1]) {aptVis[i] = false; break}} // floor#
+				let hidden = false;
+				if(j == 2) {for(let k = 1; k < 3; k++) {if(actvFltr != units[i][3][k]) {hidden = true}}}
+				if(hidden == true) {aptVis[i] = false; break}  // price
+				if(j == 3) {
+					let fltrDate = actvFltrs[3].split("/");
+					let avaiDate = units[i][2].split("/");
+					let fltrYr = Number(fltrDate[2]); let avaiYr = Number(avaiDate[2]);
+					let fltrMth = Number(fltrDate[0]); let avaiMth = Number(avaiDate[0]);
+					let fltrDay = Number(fltrDate[1]); let avaiDay = Number(avaiDate[1]);
+					if(fltrYr > avaiYr) {aptVis[i] = false; break} // Year
+					else if(fltrYr < avaiYr) {}
+					else if(fltrMth > avaiMth) {aptVis[i] = false; break} // Month
+					else if(fltrMth < avaiMth) {}
+					else if(fltrDay > avaiDay) {aptVis[i] = false; break} // Day
+				}
+				// If unit passes all filters
+				aptVis[i] = true;
+			}
 		}
-		// Minimise or expand each apts[]
+		// Minimise or expand each apt
 		for(let i = 0; i < aptVis.length; i++) {
-			console.log(aptVis[i]);
-			if(aptVis[i] == false) {/* minimise apts[i] */}
-			else {/* expand apts[i] */}
+			let maxH = "none"; let pad = "0.25rem"; let bord = "0.125rem";
+			if(aptVis[i] == false) {maxH = "0rem"; pad = "0rem"; bord = "0rem"}
+			apts[i].style.maxHeight = maxH;
+			apts[i].style.paddingTop = pad;
+			apts[i].style.paddingBottom = pad;
+			apts[i].style.borderTopWidth = bord;
 		}
-		if(!aptVis.includes(true)) {item.dataset.filter = "true"}
+		if(aptVis.length > 0 && !aptVis.includes(true)) {item.dataset.filter = "true"}
 		else {item.dataset.filter = "false"}
 	}
 	else {
@@ -243,8 +219,10 @@ function filter() {
 }
 
 function switchState() {
+	let txt = document.querySelector(".res-filter-reset-text");
 	// curSt: 0 = List, 1 = Detail
-	let cs = 1; let dir = "row"; if(curSt == 1) {cs = 0; dir = "column"}
+	let cs = 1; let dir = "row"; let newTxt = "Back to List";
+	if(curSt == 1) {cs = 0; dir = "column"; newTxt = "Reset Filters"}
 	curSt = cs;
 	// Collapse
 	for(let i = 0; i < lstArr.length; i++) {
@@ -252,6 +230,7 @@ function switchState() {
 		else if(curSt == 0) {lstItem(lstArr[i], 0)}
 		else {lstItem(lstArr[i], 2)}
 	}
+	opacity0(txt);
 	// Reorientate + rebuild
 	setTimeout(function() {
 		lstColList.style.flexDirection = dir; lstColList.style.WebkitFlexDirection = dir;
@@ -262,7 +241,8 @@ function switchState() {
 			for(let j = 0; j < lstArr.length; j++) {lstItem(lstArr[j], 1)}
 		}
 		else {changeSlide()}
-		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200)
+		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200);
+		txt.innerText = newTxt; opacity1(txt)
 	}, 800);
 }
 
@@ -302,20 +282,20 @@ switcher.addEventListener('click', switchView);
 
 // Filter reset
 document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
-	// Reset filter selectors
-	for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].selectedIndex = 0}
-	// Remove all actvFltrs[]
-	actvFltrs = [];
-	//for(let i = 0; i < actvFltrs.length; i++) {actvFltrs[i] = undefined}
+	if(curSt == 0) {
+		// Reset filter selectors
+		for(let i = 0; i < fltrArr.length - 1; i++) {fltrArr[i].selectedIndex = 0}
+		fltrArr[3].value = "";
+		// Remove all active filters
+		actvFltrs = [];
+	}
 	filter();
 });
 
 // Filter selectors
 for(let i = 0; i < fltrArr.length - 1; i++) {
 	fltrArr[i].addEventListener('change', function() {
-		console.log(fltrArr[i].value);
 		actvFltrs[i] = fltrArr[i].value;
-		console.log(actvFltrs);
 		filter();
 	})
 }
