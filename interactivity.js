@@ -10,11 +10,6 @@ const lstArr = document.getElementsByClassName("res-lst-col-item");
 const lstColList = document.querySelector(".res-lst-col-list");
 const lstSldr = document.querySelector(".res-lst-col-wrap");
 
-// Sitemap layers
-const sitemaps = document.getElementsByClassName("res-map-sitemap");
-var sitemapLayers = [];
-for(let i = 0; i < sitemaps.length; i++) {sitemapLayers.push(sitemaps[i].nextSibling.querySelectorAll(".res-map-col-item"))}
-
 // Filter datepicker
 const picker = datepicker("#filterDate", {
 	onSelect: (instance, date) => {
@@ -45,11 +40,6 @@ var curIt = 0; // Item
 var galNum = 0;
 var galMaxH = "";
 var lstMaxH = "150rem";
-
-function updateMaxH() {
-	computeGalMaxH();
-	computeLstMaxH();
-}
 
 function changeSlide() {
 	if(curIt < 0) {curIt = 1; return}
@@ -146,11 +136,21 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
-function filterCheck(item, unitType, units, apts, mapLayers) {
+function aptFltr(apt, x) {
+	let maxH = "none"; let pad = "0.25rem"; let bord = "0.125rem";
+	if(x == 0) {maxH = "0rem"; pad = "0rem"; bord = "0rem"}
+	apt.style.maxHeight = maxH;
+	apt.style.paddingTop = pad;
+	apt.style.paddingBottom = pad;
+	apt.style.borderTopWidth = bord;
+}
+
+function filterCheck(item, unitType, units, apts) {
 	if(dataReady == true) {
 		let aptVis = [];
-		// For each unit of this unit type
+		// Determine visibility of each unit of this unit type
 		for(let i = 0; i < units.length; i++) {
+			if(actvFltrs.length == 0) {aptVis[i] = true; continue}
 			// Check against each active filter
 			for(let j = 0; j < actvFltrs.length; j ++) {
 				// If no actvFltrs[j], skip
@@ -178,15 +178,12 @@ function filterCheck(item, unitType, units, apts, mapLayers) {
 				aptVis[i] = true;
 			}
 		}
-		// Minimise or expand each apt
+		// Minimise or expand each apt + set sitemap layers' visibility
 		for(let i = 0; i < aptVis.length; i++) {
-			let maxH = "none"; let pad = "0.25rem"; let bord = "0.125rem";
-			if(aptVis[i] == false) {maxH = "0rem"; pad = "0rem"; bord = "0rem"}
-			apts[i].style.maxHeight = maxH;
-			apts[i].style.paddingTop = pad;
-			apts[i].style.paddingBottom = pad;
-			apts[i].style.borderTopWidth = bord;
-			// Cycle through all sitemap layers to find a match
+			// Apts
+			let x = 1; if(aptVis[i] == false) {x = 0}
+			aptFltr(apts[i], x);
+			// Find matching sitemap layer
 			let layerMatch = false;
 			let mapLayer;
 			for(let j = 0; j < sitemapLayers.length; j++) {
@@ -197,14 +194,17 @@ function filterCheck(item, unitType, units, apts, mapLayers) {
 					if(aptTxt.includes(aptNum)) {mapLayer = sitemapLayers[j][k]; layerMatch = true; break}
 				}
 			}
+			// If match found, set visibility
 			if(layerMatch == true) {
 				if(aptVis[i] == false) {opacity0(mapLayer)}
 				else {opacity1(mapLayer)}
 			}
 		}
+		// Set list item's visibility + fallback for filter reset
 		if(aptVis.length > 0 && !aptVis.includes(true)) {item.dataset.filter = "true"}
 		else {item.dataset.filter = "false"}
 	}
+	// Pre-API filter using just unit type's #beds
 	else {
 		// #beds
 		if(Number(actvFltrs[0]) != unitType[1]) {item.dataset.filter = "true"}
@@ -325,5 +325,4 @@ for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
 }
 
-//window.addEventListener('resize', updateMaxH);
 for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
