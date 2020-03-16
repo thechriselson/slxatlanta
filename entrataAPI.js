@@ -11,8 +11,10 @@ var unitTypes = [];
 var units = [];
 var apts = [];
 
-// Sitemap layers
-const sitemaps = document.getElementsByClassName("res-map-sitemap"); var sitemapLayers = [];
+// Sitemap
+const sitemaps = document.getElementsByClassName("res-map-sitemap");
+const sitemapConts = document.getElementsByClassName("res-map-col-wrap");
+var sitemapLayers = [];
 for(let i = 0; i < sitemaps.length; i++) {sitemapLayers.push(sitemaps[i].nextSibling.querySelectorAll(".res-map-col-item"))}
 
 function priceRange(price) {
