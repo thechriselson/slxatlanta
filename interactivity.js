@@ -14,7 +14,6 @@ const lstSldr = document.querySelector(".res-lst-col-wrap");
 const sitemaps = document.getElementsByClassName("res-map-sitemap");
 var sitemapLayers = [];
 for(let i = 0; i < sitemaps.length; i++) {sitemapLayers.push(sitemaps[i].nextSibling.querySelectorAll(".res-map-col-item"))}
-//const sitemapLayers = document.getElementsByClassName("res-map-col-item");
 
 // Filter datepicker
 const picker = datepicker("#filterDate", {
@@ -187,9 +186,20 @@ function filterCheck(item, unitType, units, apts, mapLayers) {
 			apts[i].style.paddingTop = pad;
 			apts[i].style.paddingBottom = pad;
 			apts[i].style.borderTopWidth = bord;
-			if(typeof mapLayers[i] !== 'undefined') {
-				if(aptVis[i] == false) {opacity0(mapLayers[i])}
-				else {opacity1(mapLayers[i])}
+			// Cycle through all sitemap layers to find a match
+			let layerMatch = false;
+			let mapLayer;
+			for(let j = 0; j < sitemapLayers.length; j++) {
+				if(layerMatch == true) {break}
+				for(let k = 0; k < sitemapLayers[j].length; k++) {
+					let aptNum = sitemapLayers[j][k].querySelector(".res-map-data").dataset.apt;
+					let aptTxt = apts[i].querySelector(".res-lst-apt-txt.apt").textContent;
+					if(aptTxt.includes(aptNum)) {mapLayer = sitemapLayers[j][k]; layerMatch = true; break}
+				}
+			}
+			if(layerMatch == true) {
+				if(aptVis[i] == false) {opacity0(mapLayer)}
+				else {opacity1(mapLayer)}
 			}
 		}
 		if(aptVis.length > 0 && !aptVis.includes(true)) {item.dataset.filter = "true"}
@@ -216,7 +226,7 @@ function filter() {
 			if(dataReady == true) {
 				// Match current lstArr[i] to correct unitType[j] + filterCheck()
 				for(let j = 0; j < unitTypes.length; j++) {
-					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j], sitemapLayers[j])}
+					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
 				}
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}

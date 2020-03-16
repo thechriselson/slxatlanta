@@ -25,7 +25,6 @@ function pushToUnitTypes(i, j, item) {
 }
 
 function populateApts() {
-	console.log(sitemapLayers);
 	for(let i = 0; i < unitTypes.length; i++) {
 		let aptDiv = {}
 		// Match unitTypes[i] to its corresponding list item + store its aptDiv
