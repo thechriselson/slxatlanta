@@ -36,10 +36,27 @@ const switcher = document.querySelector(".res-fltr-all-div");
 var curVu = 0; // View: 0 = Gallery, 1 = List
 var curSt = 0; // State: 0 = List, 1 = Detail
 var curIt = 0; // Item
+var curFl = 0; // Sitemap FL
 
 var galNum = 0;
 var galMaxH = "";
 var lstMaxH = "150rem";
+
+function changeFloor(x) {
+	// Hide current floor's units
+	let y = x - 1;
+	let z = 0;
+	if(curFl != y) {opacity0(sitemapConts[curFl]); z = 200}
+	// Show all sitemaps[] up until sitemaps[x]
+	setTimeout(function() {
+		for(let i = 0; i < sitemaps.length; i++) {
+			if(i < x) {opacity1(sitemaps[i])}
+			else {opacity0(sitemaps[i])}
+		}
+	}, z);
+	// Show new floor's units + set new curFl
+	setTimeout(function() {opacity1(sitemapConts[x-1]); curFl = x - 1}, z + 200)
+}
 
 function changeSlide() {
 	if(curIt < 0) {curIt = 1; return}
@@ -231,6 +248,7 @@ function filter() {
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}
 		}
+	changeFloor(fltrArr[1].value)
 	}, x)
 }
 
