@@ -11,6 +11,10 @@ var unitTypes = [];
 var units = [];
 var apts = [];
 
+// Sitemap layers
+const sitemaps = document.getElementsByClassName("res-map-sitemap"); var sitemapLayers = [];
+for(let i = 0; i < sitemaps.length; i++) {sitemapLayers.push(sitemaps[i].nextSibling.querySelectorAll(".res-map-col-item"))}
+
 function priceRange(price) {
 	if(price < 1501) {return 1}
 	else if(price < 1901) {return 2}
