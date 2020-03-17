@@ -40,7 +40,7 @@ var curFl = 0; // Sitemap FL
 
 var galNum = 0;
 var galMaxH = "";
-var lstMaxH = "200rem";
+var lstMaxH = "300rem";
 
 function changeFloor() {
 	let x = actvFltrs[1];
