@@ -42,10 +42,12 @@ var galNum = 0;
 var galMaxH = "";
 var lstMaxH = "150rem";
 
-function changeFloor(x) {
+function changeFloor() {
+	let x = actvFltrs[1];
+	let y = 0; // Default (FL1)
+	if(x !== 'undefined' || x.length != 0) {y = x - 1}
+	let z = 0; // Timer delay
 	// Hide current floor's units
-	let y = x - 1;
-	let z = 0;
 	if(curFl != y) {opacity0(sitemapConts[curFl]); z = 200}
 	// Show all sitemaps[] up until sitemaps[x]
 	setTimeout(function() {
@@ -55,7 +57,7 @@ function changeFloor(x) {
 		}
 	}, z);
 	// Show new floor's units + set new curFl
-	setTimeout(function() {opacity1(sitemapConts[x-1]); curFl = x - 1}, z + 200)
+	setTimeout(function() {opacity1(sitemapConts[y]); curFl = y}, z + 200)
 }
 
 function changeSlide() {
@@ -248,7 +250,7 @@ function filter() {
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}
 		}
-	changeFloor(fltrArr[1].value)
+	changeFloor()
 	}, x)
 }
 
