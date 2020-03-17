@@ -40,7 +40,7 @@ var curFl = 0; // Sitemap FL
 
 var galNum = 0;
 var galMaxH = "";
-var lstMaxH = "300rem";
+var lstMaxH = "225rem";
 
 function changeFloor() {
 	let x = actvFltrs[1];
@@ -150,7 +150,7 @@ function lstItem(item, x, y) {
 	// y: 0 = default mxh, 1 = lstMaxH
 	// els: [0] = contentCon, [1] = thmbImg, [2] = expDiv, [3] = buffers[], [4] = arrows[]
 	let els = [item.querySelector(".res-lst-content-con"), item.querySelector(".res-lst-thumb-div"), item.querySelector(".res-lst-expand-div"), item.querySelectorAll(".res-lst-overview-buffer"), [item.querySelector(".res-lst-arrow-left"), item.querySelector(".res-lst-arrow-right")]];
-	let mxh = "150rem"; if(y == 1) {mxh = lstMaxH}
+	let mxh = "225rem"; if(y == 1) {mxh = lstMaxH}
 	if(x == 0) {lstItemMin(item, els)}
 	else if(x == 1) {lstItemThmb(item, els)}
 	else if(x == 2) {lstItemExp(item, els, mxh)}
