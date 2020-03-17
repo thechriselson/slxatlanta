@@ -52,7 +52,7 @@ function changeFloor() {
 	// Show all sitemaps[] up until sitemaps[x]
 	setTimeout(function() {
 		for(let i = 0; i < sitemaps.length; i++) {
-			if(i < x) {opacity1(sitemaps[i])}
+			if(i =< y) {opacity1(sitemaps[i])}
 			else {opacity0(sitemaps[i])}
 		}
 	}, z);
