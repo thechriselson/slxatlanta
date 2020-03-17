@@ -40,15 +40,13 @@ var curFl = 0; // Sitemap FL
 
 var galNum = 0;
 var galMaxH = "";
-var lstMaxH = "150rem";
+var lstMaxH = "200rem";
 
 function changeFloor() {
-	console.log(actvFltrs[1]);
 	let x = actvFltrs[1];
 	let y = 0; // Default (FL1)
 	if(x == undefined || x.length == 0) {}
 	else {y = x - 1}
-	console.log(x + " : " + y);
 	let z = 0; // Timer delay
 	// Hide current floor's units
 	if(curFl != y) {opacity0(sitemapConts[curFl]); z = 200}
