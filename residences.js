@@ -238,7 +238,7 @@ function filterCheck(item, unitType, units, apts) {
 function filter() {
 	let x = 0;
 	if(curVu == 0) {x = 600; switchView()}
-	if(curSt == 1) {x = 1000; switchState()}
+	if(curSt == 1) {x = 800; switchState()}
 	setTimeout(function() {
 		for(let i = 0; i < lstArr.length; i++) {
 			let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
@@ -276,11 +276,11 @@ function switchState() {
 		if(curSt == 0) {
 			lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
 			lstSldr.style.transform = "translateX(0%)";
-			//for(let j = 0; j < lstArr.length; j++) {lstItem(lstArr[j], 1)}
+			/*for(let j = 0; j < lstArr.length; j++) {lstItem(lstArr[j], 1)}
 			for(let j = 0; j < lstArr.length; j++) {
 				if(lstArr[j].dataset.filter == "true") {lstItem(lstArr[j], 0)}
 				else {lstItem(lstArr[j], 1)}
-			}
+			}*/
 		}
 		else {changeSlide()}
 		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200);
