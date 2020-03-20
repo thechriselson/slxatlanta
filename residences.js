@@ -238,7 +238,7 @@ function filterCheck(item, unitType, units, apts) {
 function filter() {
 	let x = 0;
 	if(curVu == 0) {x = 600; switchView()}
-	if(curSt == 1) {x = 800; switchState()}
+	if(curSt == 1) {x = 1000; switchState()}
 	setTimeout(function() {
 		for(let i = 0; i < lstArr.length; i++) {
 			let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
