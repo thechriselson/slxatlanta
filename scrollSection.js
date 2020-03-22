@@ -5,6 +5,8 @@
 const heroOverlay = document.getElementById("heroOverlay");
 const scrollBgArray = document.getElementsByClassName("sl-bg-cont");
 const scrollTextArray = document.getElementsByClassName("scroll-section");
+const upArrows = document.getElementsByClassName("sl-arrow up");
+const downArrows = document.getElementsByClassName("sl-arrow down");
 const sectionLinks = document.getElementsByClassName("sl-s-links-col-item");
 
 var time = 0;
@@ -218,6 +220,11 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 	}
 }
 
+// Section arrows
+for(let i = 0; i < upArrows.length; i++) {upArrows[i].addEventListener('click', () => {scrollEventUp()})}
+for(let i = 0; i < downArrows.length; i++) {downArrows[i].addEventListener('click', () => {scrollEventDown()})}
+
+// Section links
 for(let i = 0; i < sectionLinks.length; i++) {
 	sectionLinks[i].addEventListener('click', function() {
 		// Identify corresponding section + set currentSection + scroll up or down
