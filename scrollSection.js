@@ -212,7 +212,10 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 		bgDiv.style.backgroundPosition = "" + bgPos[0] + "% " + bgPos[1] + "%"
 	}
 	// Padding
-	if(data.padded == "Yes") {scrollBgArray[i].className += " padded"}
+	if(data.padded == "Yes") {
+		scrollBgArray[i].className += " padded";
+		scrollBgArray[i].querySelector(".sl-bg").className += " padded"
+	}
 }
 
 for(let i = 0; i < sectionLinks.length; i++) {
