@@ -264,7 +264,6 @@ function switchState() {
 	// Collapse
 	for(let i = 0; i < lstArr.length; i++) {
 		if(lstArr[i] != lstArr[curIt]) {lstItem(lstArr[i], 0)}
-		//else if(curSt == 0) {lstItem(lstArr[i], 0)}
 		else if(curSt == 0) {lstItem(lstArr[i], 1)}
 		else {lstItem(lstArr[i], 2)}
 	}
@@ -276,11 +275,6 @@ function switchState() {
 		if(curSt == 0) {
 			lstDiv.style.maxHeight = "" + lstArr.length * 12 + "rem";
 			lstSldr.style.transform = "translateX(0%)";
-			/*for(let j = 0; j < lstArr.length; j++) {lstItem(lstArr[j], 1)}
-			for(let j = 0; j < lstArr.length; j++) {
-				if(lstArr[j].dataset.filter == "true") {lstItem(lstArr[j], 0)}
-				else {lstItem(lstArr[j], 1)}
-			}*/
 		}
 		else {changeSlide()}
 		setTimeout(function() {lstSldr.style.transition = "transform 600ms"}, 200);
@@ -352,3 +346,5 @@ for(let i = 0; i < lstArr.length; i++) {
 }
 
 for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
+
+window.addEventListener('resize', () => {if(curVu == 1 && curSt == 1) {changeSlide()}});
