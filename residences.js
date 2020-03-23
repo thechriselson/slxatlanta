@@ -48,7 +48,7 @@ var lstMaxH = "225rem";
 function changeFloor(i) {
 	let x = actvFltrs[1];
 	let y = 0; // Default (FL1)
-	if(i !== undefined) {x = i}
+	if(i !== undefined) {x = i} // Passed specific floor
 	if(x == undefined || x.length == 0) {}
 	else {y = x - 1}
 	let z = 0; // Timer delay
