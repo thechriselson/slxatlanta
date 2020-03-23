@@ -44,13 +44,13 @@ function populateApts() {
 			let aptCon = aptDiv.parentNode
 			let newApt = aptDiv.cloneNode(true);
 			let txtArr = newApt.querySelectorAll(".res-lst-apt-txt");
-			let viewDiv = newApt.querySelector(".res-lst-apt-txt-div map");
+			let mapView = newApt.querySelector(".res-lst-apt-txt-div.map");
 			txtArr[0].innerText = "APT " + units[i][j][0];
 			txtArr[1].innerText = "Floor " + units[i][j][1];
 			txtArr[2].innerText = "Available " + units[i][j][2];
 			txtArr[3].innerText = "Starting at $" + units[i][j][3][0];
 			// Click to display unit on sitemap
-			//viewDiv.addEventListener('click', () => {changeFloor(units[i][j][1])});
+			mapView.addEventListener('click', () => {changeFloor(units[i][j][1])});
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
 			// Store newApt(s) relative to their parent unit type
