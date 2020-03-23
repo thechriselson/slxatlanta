@@ -49,6 +49,7 @@ function populateApts() {
 			txtArr[1].innerText = "Floor " + units[i][j][1];
 			txtArr[2].innerText = "Available " + units[i][j][2];
 			txtArr[3].innerText = "Starting at $" + units[i][j][3][0];
+			// Click to display unit on sitemap
 			viewDiv.addEventListener('click', () => {changeFloor(units[i][j][1])});
 			newApt.style.display = "flex";
 			aptCon.appendChild(newApt);
