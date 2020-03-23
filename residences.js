@@ -29,6 +29,9 @@ const picker = datepicker("#filterDate", {
 const fltrArr = [document.getElementById("filterBed"), document.getElementById("filterFloor"), document.getElementById("filterPrice"), document.getElementById("filterDate")];
 var actvFltrs = [];
 
+// Deactivate API-based filters
+for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
+
 // Switcher
 const switcher = document.querySelector(".res-fltr-all-div");
 
@@ -344,7 +347,5 @@ for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {curIt = curIt - 1; changeSlide()});
 	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
 }
-
-for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
 
 window.addEventListener('resize', () => {if(curVu == 1 && curSt == 1) {changeSlide()}});
