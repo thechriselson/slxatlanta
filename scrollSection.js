@@ -220,6 +220,9 @@ for(let i = 0; i < scrollBgArray.length; i++) {
 	}
 }
 
+// Hero overlay onClick
+heroOverlay.addEventListener('click', () => {scrollEventDown()});
+
 // Section arrows
 for(let i = 0; i < upArrows.length; i++) {upArrows[i].addEventListener('click', () => {scrollEventUp()})}
 for(let i = 0; i < downArrows.length; i++) {downArrows[i].addEventListener('click', () => {scrollEventDown()})}
