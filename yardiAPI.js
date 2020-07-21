@@ -144,7 +144,7 @@ var getJSON = function(url, callback) {
     xhr.send();
 };
 
-getJSON('https://api.rentcafe.com/rentcafeapi.aspx?requestType=apartmentavailability&APIToken=e72e7643-92d3-404c-a730-9a54fc39c6f8&propertyCode=p1186669',  function(err, data) {
+getJSON('https://api.rentcafe.com/rentcafeapi.aspx?requestType=apartmentavailability&APIToken=OTc2ODI%3d-ypOsYE8hSPU%3d&propertyCode=p1206322',  function(err, data) {
     
     if (err != null) {console.error(err);}
     else {}
