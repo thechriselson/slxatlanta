@@ -237,11 +237,18 @@ function filterCheck(item, unitType, units, apts) {
 		else {item.dataset.filter = "false"}
 	}
 	// Minimise or expand list item
-	if(item.dataset.filter == "true") {lstItem(item, 0)}
-	else {lstItem(item, 1)}
+	console.log(item.dataset.filter);
+	setTimeout(() => {
+		console.log(item.dataset.filter);
+		if(item.dataset.filter == "true") {lstItem(item, 0)}
+		else {lstItem(item, 1)}
+	}, 240)
+	//if(item.dataset.filter == "true") {lstItem(item, 0)}
+	//else {lstItem(item, 1)}
 }
 
 function filter() {
+	console.log(actvFltrs);
 	let x = 0;
 	if(curSt == 1) {x = 800; switchState()}
 	setTimeout(function() {
@@ -316,4 +323,4 @@ for(let i = 0; i < lstArr.length; i++) {
 	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
 }
 
-window.addEventListener('resize', () => {if(curVu == 1 && curSt == 1) {changeSlide()}});
+window.addEventListener('resize', () => {if(curSt == 1) {changeSlide()}});
