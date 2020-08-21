@@ -57,7 +57,7 @@ function populateApts() {
 			apts[i].push(newApt)
 		}
 		// If listing has no apts available, hide
-		if(unitTypes[i])
+		//if(unitTypes[i])
 	}
 	// Set avai or unavai SVGs for each sitemap layer
 	for(let i = 0; i < sitemapLayers.length; i++) {
