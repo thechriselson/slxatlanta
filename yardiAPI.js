@@ -56,6 +56,8 @@ function populateApts() {
 			// Store newApt(s) relative to their parent unit type
 			apts[i].push(newApt)
 		}
+		// If listing has no apts available, hide
+		if(unitTypes[i])
 	}
 	// Set avai or unavai SVGs for each sitemap layer
 	for(let i = 0; i < sitemapLayers.length; i++) {
@@ -135,6 +137,8 @@ var getJSON = function(url, callback) {
 				// Push unit to corresponding type array in units[]
 				units[matchedType].push([aptNum, floorNum, avaiDate, [minRent, minPrice, maxPrice]])
 			}
+			console.log(unitTypes);
+			console.log(units);
 			populateApts();
 			if(curSt == 1) {changeSlide()}
 			dataReady = true;
