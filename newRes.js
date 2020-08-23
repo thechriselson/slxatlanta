@@ -27,7 +27,7 @@ const fltrArr = [
 	document.getElementById("filterPrice"),
 	document.getElementById("filterDate")
 ];
-var activeFilters = [beds: false, floor: false, price: false, date: false];
+var activeFilters = {beds: false, floor: false, price: false, date: false}
 
 // Deactivate API-based filters
 for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
