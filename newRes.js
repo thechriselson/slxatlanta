@@ -1,6 +1,4 @@
-///////////////////
-// Interactivity //
-///////////////////
+// Filters //
 
 const lstDiv = document.querySelector(".res-lst-div");
 const lstArr = document.getElementsByClassName("res-lst-col-item");
@@ -17,7 +15,7 @@ const picker = datepicker("#filterDate", {
 		let day = date.getDate().toString();
 		if(day.length == 1) {day = "0" + day}
 		// Add selected date to actvFltrs[]
-		actvFltrs[3] = month + "/" + day + "/" + year;
+		activeFilters.date = month + "/" + day + "/" + year;
 		filter()
 	}
 });
@@ -29,7 +27,7 @@ const fltrArr = [
 	document.getElementById("filterPrice"),
 	document.getElementById("filterDate")
 ];
-var actvFltrs = [];
+var activeFilters = [beds: false, floor: false, price: false, date: false];
 
 // Deactivate API-based filters
 for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
@@ -37,7 +35,7 @@ for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
 // Current vars
 var curSt = 0; // State: 0 = List, 1 = Detail
 var curIt = 0; // Item
-var curFl = 0; // Sitemap FL
+var curFloor = 0; // Sitemap FL
 
 var lstMaxH = "225rem";
 
@@ -171,7 +169,7 @@ function aptFltr(apt, x) {
 	apt.style.borderTopWidth = bord;
 }
 
-function filterCheck(item, unitType, units, apts) {
+/*function filterCheck(item, unitType, units, apts) {
 	if(dataReady == true) {
 		let aptVis = [];
 		// Determine visibility of each unit of this unit type
@@ -245,9 +243,9 @@ function filterCheck(item, unitType, units, apts) {
 	}, 240)
 	//if(item.dataset.filter == "true") {lstItem(item, 0)}
 	//else {lstItem(item, 1)}
-}
+}*/
 
-function filter() {
+/*function filter() {
 	console.log(actvFltrs);
 	let x = 0;
 	if(curSt == 1) {x = 800; switchState()}
@@ -257,14 +255,112 @@ function filter() {
 			let tempAttrs = [tempData.name.toUpperCase(), [Number(tempData.beds)]];
 			if(dataReady == true) {
 				// Match current lstArr[i] to correct unitType[j] + filterCheck()
-				for(let j = 0; j < unitTypes.length; j++) {
-					if(unitTypes[j][0][0] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
+				for(let j = 0; j < units.length; j++) {
+					if(units[j] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
+				}
+				for(let j = 0; j < units.length; j++) {
+					for(let k = 0; k < units[j].apts.length; k++) {
+						if(tempData.name == units[j].apts[k].name) {
+							filterCheck(lstArr[i], units)
+						}
+					}
 				}
 			}
 			else {filterCheck(lstArr[i], tempAttrs)}
 		}
 	changeFloor()
 	}, x)
+}*/
+
+function filter() {
+	console.log(activeFilters);
+	let results = [];
+	for(let i = 0; i < units.length; i++) {
+		results.push({
+			"name": units[i].name,
+			"unitsAvailable": 0,
+			"apts": []
+		});
+		for(let j = 0; j < units[i].apts.length; j++) {
+			// Compare apt properties to active filters + add to results[]
+			let filterPass = true;
+			let apt = units[i].apts[j];
+			for(const filter in activeFilters) {
+				if(activeFilters[filter] === false) {}
+				else if(filter == "beds" | filter == "floor") {
+					if(activeFilters[filter] != apt[filter]) {filterPass = false}
+				}
+				else if(filter == "price") {
+					let priceArr = activeFilters[filter].split('-');
+					let min = Number(priceArr[0]);
+					let max = Number(priceArr[1]);
+					if(apt[filter] < min | apt[filter] > max) {filterPass = false}
+				}
+				else if(filter == "date") {
+					// Filter date
+					let filterDateArr = activeFilters[filter].split('/');
+					let filterYear = Number(filterDateArr[2]);
+					let filterMonth = Number(filterDateArr[0]);
+					let filterDay = Number(filterDateArr[1]);
+					// Apt available date
+					let aptDateArr = apt[filter].split('/');
+					let aptYear = Number(aptDateArr[2]);
+					let aptMonth = Number(aptDateArr[0]);
+					let aptDay = Number(aptDateArr[1]);
+					// Compare
+					if(aptYear > filterYear) {filterPass = false}
+					else if(filterYear <= aptYear && aptMonth > filterMonth) {filterPass = true}
+					else if(filterYear <= aptYear && filterMonth <= aptMonth && aptDay > filterDay) {filterPass = true}
+				}
+			}
+			if(filterPass == true) {
+				units[i].apts[j].hidden = false;
+				results[i].unitsAvailable++
+			}
+			else {units[i].apts[j].hidden = true}
+			results[i].apts.push({
+				"name": apt.name,
+				"filterPass": filterPass
+			})
+		}
+	}
+	// Update sitemap units
+	// Match unitListings[] to results[] + hide/show apts & units
+	// Match unit
+	for(let i = 0; i < unitListings.length; i++) {
+		let unitName = unitListings[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
+		for(let j = 0; j < results.length; j++) {
+			if(unitName == results[j].name) {
+				// Match apts
+				let apts = unitListings[i].querySelectorAll('.res-lst-apt-div');
+				for(let k = 0; k < apts.length; k++) {
+					let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
+					for(let l = 0; l < results[j].apts.length; l++) {
+						if(aptName == ("APT " + results[j].apts[l].name + "")) {
+							// Show/hide apt
+							let toggle = false;
+							if(!apts[k].classList.contains('hidden') && !results[j].apts[l].filterPass) {toggle = true}
+							if(apts[k].classList.contains('hidden') && results[j].apts[l].filterPass) {toggle = true}
+							if(toggle) {apts[k].classList.toggle('hidden')}
+						}
+					}
+				}
+			}
+			// Show/hide unit
+			let unitContH = getComputedStyle(unitListings[i]).height;
+			let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-col-item'));
+			if(results[j].unitsAvailable == 0) {
+				unitListings[i].style.maxHeight = unitContH;
+				setTimeout(() => {unitListings[i].style.maxHeight = "0px"}, 120)
+			}
+			else {
+				setTimeout(() => {
+					unitListings[i].style.maxHeight = unitH;
+					setTimeout(() => {unitListings[i].style.maxHeight = "none"}, 120)
+				}, 120)
+			}
+		}
+	}
 }
 
 function switchState() {
@@ -301,7 +397,7 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 		for(let i = 0; i < fltrArr.length - 1; i++) {fltrArr[i].selectedIndex = 0}
 		fltrArr[3].value = "";
 		// Remove all active filters
-		actvFltrs = [];
+		activeFilters = [];
 	}
 	filter();
 });
@@ -309,7 +405,7 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 // Filter selectors
 for(let i = 0; i < fltrArr.length - 1; i++) {
 	fltrArr[i].addEventListener('change', function() {
-		actvFltrs[i] = fltrArr[i].value;
+		activeFilters[i] = fltrArr[i].value;
 		filter();
 	})
 }
