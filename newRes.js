@@ -348,7 +348,7 @@ function filter() {
 			}
 			// Show/hide unit
 			let unitContH = getComputedStyle(unitListings[i]).height;
-			let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-cont'));
+			let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-cont')).height;
 			if(results[j].unitsAvailable == 0) {
 				unitListings[i].style.maxHeight = unitContH;
 				setTimeout(() => {unitListings[i].style.maxHeight = "0px"}, 120)
