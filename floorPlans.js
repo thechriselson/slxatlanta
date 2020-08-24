@@ -47,7 +47,7 @@ var activeFilters = {beds: false, floor: false, price: false, date: false}
 var units = [];
 var apts = [];
 var curIt = 0; // Item
-var curFloor = 0; // Sitemap FL
+var curFl = 0; // Sitemap FL
 var curSt = 0; // State: 0 = List, 1 = Detail
 var lstMaxH = "225rem";
 
@@ -355,7 +355,7 @@ function populateApts() {
 					mapView.addEventListener('click', () => {changeFloor(units[j].apts[k].floor)});
 					newApt.style.display = "flex";
 					aptCont.appendChild(newApt);
-					apts[j].push(newApt);
+					apts[k].push(newApt);
 					unitsAvailable++
 				}
 			}
