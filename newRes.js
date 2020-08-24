@@ -30,7 +30,7 @@ const filterBttns = [
 var activeFilters = {beds: false, floor: false, price: false, date: false}
 
 // Deactivate API-based filters
-for(let i = 1; i < fltrArr.length; i++) {fltrArr[i].disabled = true}
+for(let i = 1; i < filterBttns.length; i++) {filterBttns[i].disabled = true}
 
 // Current vars
 var curSt = 0; // State: 0 = List, 1 = Detail
@@ -394,8 +394,8 @@ function switchState() {
 document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
 	if(curSt == 0) {
 		// Reset filter selectors
-		for(let i = 0; i < fltrArr.length - 1; i++) {fltrArr[i].selectedIndex = 0}
-		fltrArr[3].value = "";
+		for(let i = 0; i < filterBttns.length - 1; i++) {filterBttns[i].selectedIndex = 0}
+		filterBttns[3].value = "";
 		// Remove all active filters
 		activeFilters = [];
 	}
@@ -403,9 +403,9 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 });
 
 // Filter selectors
-/*for(let i = 0; i < fltrArr.length - 1; i++) {
-	fltrArr[i].addEventListener('change', function() {
-		activeFilters[i] = fltrArr[i].value;
+/*for(let i = 0; i < filterBttns.length - 1; i++) {
+	filterBttns[i].addEventListener('change', function() {
+		activeFilters[i] = filterBttns[i].value;
 		filter();
 	})
 }*/
