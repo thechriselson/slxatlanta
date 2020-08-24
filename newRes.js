@@ -411,9 +411,9 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 }*/
 
 // Filter buttons
-for(let i = 0; i < fltrArr.length - 1; i++) {
-	fltrArr[i].addEventListener('change', () => {
-		activeFilters[fltrArr[i].dataset.filter] = fltrArr[i].value;
+for(let i = 0; i < filterBttns.length - 1; i++) {
+	filterBttns[i].addEventListener('change', () => {
+		activeFilters[filterBttns[i].dataset.filter] = filterBttns[i].value;
 		filter()
 	})
 }
