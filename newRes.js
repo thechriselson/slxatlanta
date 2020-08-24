@@ -160,6 +160,15 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
+function aptFltr(apt, x) {
+	let maxH = "none"; let pad = "0.25rem"; let bord = "0.125rem";
+	if(x == 0) {maxH = "0rem"; pad = "0rem"; bord = "0rem"}
+	apt.style.maxHeight = maxH;
+	apt.style.paddingTop = pad;
+	apt.style.paddingBottom = pad;
+	apt.style.borderTopWidth = bord;
+}
+
 function filter() {
 	console.log(activeFilters);
 	let results = [];
@@ -220,25 +229,31 @@ function filter() {
 		// Match unit
 		for(let i = 0; i < unitListings.length; i++) {
 			let unitName = unitListings[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
+			console.log(unitName);
 			for(let j = 0; j < results.length; j++) {
 				if(unitName == results[j].name) {
 					// Match apts
 					let apts = unitListings[i].querySelectorAll('.res-lst-apt-div');
+					console.log(apts);
 					for(let k = 0; k < apts.length; k++) {
 						let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
+						console.log(aptName);
 						for(let l = 0; l < results[j].apts.length; l++) {
+							console.log(results[j].apts.name);
 							if(aptName == ("APT " + results[j].apts[l].name + "")) {
 								// Show/hide apt
-								let toggle = false;
+								/*let toggle = false;
 								if(!apts[k].classList.contains('hidden') && !results[j].apts[l].filterPass) {toggle = true}
 								if(apts[k].classList.contains('hidden') && results[j].apts[l].filterPass) {toggle = true}
-								if(toggle) {apts[k].classList.toggle('hidden')}
+								if(toggle) {apts[k].classList.toggle('hidden')}*/
+								if(!results[j].apts[l].filterPass) {aptFltr(apts[k], 0)}
+								else {aptFltr(apts[k], 1)}
 							}
 						}
 					}
 				}
 				// Show/hide unit
-				let unitContH = getComputedStyle(unitListings[i]).height;
+				/*let unitContH = getComputedStyle(unitListings[i]).height;
 				let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-con')).height;
 				if(results[j].unitsAvailable == 0) {
 					unitListings[i].style.maxHeight = unitContH;
@@ -249,7 +264,9 @@ function filter() {
 						unitListings[i].style.maxHeight = unitH;
 						setTimeout(() => {unitListings[i].style.maxHeight = "none"}, 120)
 					}, 120)
-				}
+				}*/
+				if(results[j].unitsAvailable == 0) {lstItem(unitListings[i], 0)}
+				else {lstItem(unitListings[i], 1)}
 			}
 		}
 	}, x)
