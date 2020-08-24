@@ -38,14 +38,8 @@ function populateApts() {
 				}
 			}
 		}
-		if(unitsAvailable == 0) {
-			let unitContH = getComputedStyle(unitListings[i]).height;
-			unitListings[i].style.maxHeight = unitContH;
-			setTimeout(() => {
-				unitListings[i].style.maxHeight = "0px";
-				setTimeout(() => {unitListings[i].style.display = "none"}, 120)
-			}, 120)
-		}
+		// If unit has no apts available, minimise
+		if(unitsAvailable == 0) {lstItem(unitListings[i], 0)}
 	}
 	// Set avai or unavai SVGs for each sitemap layer
 	for(let i = 0; i < sitemapLayers.length; i++) {

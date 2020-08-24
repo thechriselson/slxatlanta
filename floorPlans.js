@@ -56,10 +56,10 @@ var lstMaxH = "225rem";
 //////////////////////
 
 function changeFloor(i) {
-	let x = actvFltrs[1];
+	let x = activeFilters.floor;
 	let y = 0; // Default (FL1)
 	if(i !== undefined) {x = i} // Passed specific floor
-	if(x == undefined || x.length == 0) {}
+	if(x == false || x.length == 0) {}
 	else {y = x - 1}
 	let z = 0; // Timer delay
 	// Hide current floor's units
@@ -264,6 +264,7 @@ function filter() {
 				}
 			}
 		}
+		changeFloor()
 	}, x)
 }
 
@@ -338,6 +339,7 @@ function populateApts() {
 			let listingName = lstArr[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
 			// Once matched, populate the apts for that unit
 			if(listingName == units[j].name) {
+				apts.push([]);
 				let aptCont = lstArr[i].querySelector('.res-lst-apt-con');
 				// Generate new apts + add to list
 				for(let k = 0; k < units[j].apts.length; k++) {
@@ -353,6 +355,7 @@ function populateApts() {
 					mapView.addEventListener('click', () => {changeFloor(units[j].apts[k].floor)});
 					newApt.style.display = "flex";
 					aptCont.appendChild(newApt);
+					apts[j].push(newApt);
 					unitsAvailable++
 				}
 			}
