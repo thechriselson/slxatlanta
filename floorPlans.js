@@ -239,7 +239,7 @@ function filter() {
 				})
 			}
 		}
-		// Update sitemap units
+		updateSitemap();
 		// Match lstArr[] to results[] + hide/show apts & units
 		// Match unit
 		for(let i = 0; i < lstArr.length; i++) {
@@ -331,6 +331,23 @@ window.addEventListener('resize', () => {if(curSt == 1) {changeSlide()}});
 // Populate Listings (API) //
 /////////////////////////////
 
+function updateSitemap() {
+	for(let i = 0; i < units.length; i++) {
+		for(let j = 0; j < units[i].apts.length; j++) {
+			for(let k = 0; k < sitemapLayers.length; k++) {
+				for(let l = 0; l < sitemapLayers[k].length; l++) {
+					let aptNum = sitemapLayers[k][l].querySelector('.res-map-data').dataset.apt;
+					if(units[i].apts[j].name == aptNum) {
+						let avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
+						if(units[i].apts[j].hidden) {avaiSVG.style.display = "none"}
+						else {avaiSVG.style.display = "inline-block"}
+					}
+				}
+			}
+		}
+	}
+}
+
 function populateApts() {
 	// Match each lstArr[] to it's unit type in units[]
 	for(let i = 0; i < lstArr.length; i++) {
@@ -339,7 +356,6 @@ function populateApts() {
 			let listingName = lstArr[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
 			// Once matched, populate the apts for that unit
 			if(listingName == units[j].name) {
-				apts.push([]);
 				let aptCont = lstArr[i].querySelector('.res-lst-apt-con');
 				// Generate new apts + add to list
 				for(let k = 0; k < units[j].apts.length; k++) {
@@ -355,16 +371,16 @@ function populateApts() {
 					mapView.addEventListener('click', () => {changeFloor(units[j].apts[k].floor)});
 					newApt.style.display = "flex";
 					aptCont.appendChild(newApt);
-					apts[j].push(newApt);
-					unitsAvailable++
+					unitsAvailable++;
 				}
 			}
 		}
 		// If unit has no apts available, minimise
 		if(unitsAvailable == 0) {lstItem(lstArr[i], 0)}
 	}
+	updateSitemap()
 	// Set avai or unavai SVGs for each sitemap layer
-	for(let i = 0; i < sitemapLayers.length; i++) {
+	/*for(let i = 0; i < sitemapLayers.length; i++) {
 		for(let j = 0; j < sitemapLayers[i].length; j++) {
 			let layerMatch = false;
 			let aptNum = sitemapLayers[i][j].querySelector(".res-map-data").dataset.apt;
@@ -383,7 +399,7 @@ function populateApts() {
 			if(layerMatch == true) {avaiSVG.style.display = "inline-block"}
 			else {unavaiSVG.style.display = "inline-block"}
 		}
-	}
+	}*/
 }
 
 // Sort data
