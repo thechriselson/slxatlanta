@@ -338,7 +338,7 @@ function updateSitemap() {
 				for(let l = 0; l < sitemapLayers[k].length; l++) {
 					let aptNum = sitemapLayers[k][l].querySelector('.res-map-data').dataset.apt;
 					if(units[i].apts[j].name == aptNum) {
-						let avaiSVG = sitemapLayers[i][j].querySelector(".res-map-svg.avai");
+						let avaiSVG = sitemapLayers[k][l].querySelector(".res-map-svg.avai");
 						if(units[i].apts[j].hidden) {avaiSVG.style.display = "none"}
 						else {avaiSVG.style.display = "inline-block"}
 					}
