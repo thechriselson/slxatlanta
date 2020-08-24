@@ -45,7 +45,7 @@ for(let i = 0; i < sitemaps.length; i++) {
 var dataReady = false;
 var activeFilters = {beds: false, floor: false, price: false, date: false}
 var units = [];
-var apts = [];
+var apts = [lstArr.length];
 var curIt = 0; // Item
 var curFl = 0; // Sitemap FL
 var curSt = 0; // State: 0 = List, 1 = Detail
@@ -355,7 +355,7 @@ function populateApts() {
 					mapView.addEventListener('click', () => {changeFloor(units[j].apts[k].floor)});
 					newApt.style.display = "flex";
 					aptCont.appendChild(newApt);
-					apts[k].push(newApt);
+					apts[j].push(newApt);
 					unitsAvailable++
 				}
 			}
