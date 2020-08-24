@@ -223,29 +223,22 @@ function filter() {
 					"filterPass": filterPass
 				})
 			}
+			console.log(results);
 		}
 		// Update sitemap units
-		// Match unitListings[] to results[] + hide/show apts & units
+		// Match lstArr[] to results[] + hide/show apts & units
 		// Match unit
-		for(let i = 0; i < unitListings.length; i++) {
-			let unitName = unitListings[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
-			console.log(unitName);
+		for(let i = 0; i < lstArr.length; i++) {
+			let unitName = lstArr[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
 			for(let j = 0; j < results.length; j++) {
 				if(unitName == results[j].name) {
 					// Match apts
-					let apts = unitListings[i].querySelectorAll('.res-lst-apt-div');
-					console.log(apts);
+					let apts = lstArr[i].querySelectorAll('.res-lst-apt-div');
 					for(let k = 0; k < apts.length; k++) {
 						let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
-						console.log(aptName);
 						for(let l = 0; l < results[j].apts.length; l++) {
-							console.log(results[j].apts.name);
 							if(aptName == ("APT " + results[j].apts[l].name + "")) {
 								// Show/hide apt
-								/*let toggle = false;
-								if(!apts[k].classList.contains('hidden') && !results[j].apts[l].filterPass) {toggle = true}
-								if(apts[k].classList.contains('hidden') && results[j].apts[l].filterPass) {toggle = true}
-								if(toggle) {apts[k].classList.toggle('hidden')}*/
 								if(!results[j].apts[l].filterPass) {aptFltr(apts[k], 0)}
 								else {aptFltr(apts[k], 1)}
 							}
@@ -253,20 +246,8 @@ function filter() {
 					}
 				}
 				// Show/hide unit
-				/*let unitContH = getComputedStyle(unitListings[i]).height;
-				let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-con')).height;
-				if(results[j].unitsAvailable == 0) {
-					unitListings[i].style.maxHeight = unitContH;
-					setTimeout(() => {unitListings[i].style.maxHeight = "0px"}, 120)
-				}
-				else {
-					setTimeout(() => {
-						unitListings[i].style.maxHeight = unitH;
-						setTimeout(() => {unitListings[i].style.maxHeight = "none"}, 120)
-					}, 120)
-				}*/
-				if(results[j].unitsAvailable == 0) {lstItem(unitListings[i], 0)}
-				else {lstItem(unitListings[i], 1)}
+				if(results[j].unitsAvailable == 0) {lstItem(lstArr[i], 0)}
+				else {lstItem(lstArr[i], 1)}
 			}
 		}
 	}, x)
