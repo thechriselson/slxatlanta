@@ -21,7 +21,7 @@ const picker = datepicker("#filterDate", {
 });
 
 // Filter selectors, [0]=Bed [1]=Floor [2]=Price [3]=MoveDate
-const fltrArr = [
+const filterBttns = [
 	document.getElementById("filterBed"),
 	document.getElementById("filterFloor"),
 	document.getElementById("filterPrice"),
@@ -403,10 +403,18 @@ document.querySelector(".res-fltr-reset-div").addEventListener('click', function
 });
 
 // Filter selectors
-for(let i = 0; i < fltrArr.length - 1; i++) {
+/*for(let i = 0; i < fltrArr.length - 1; i++) {
 	fltrArr[i].addEventListener('change', function() {
 		activeFilters[i] = fltrArr[i].value;
 		filter();
+	})
+}*/
+
+// Filter buttons
+for(let i = 0; i < fltrArr.length - 1; i++) {
+	fltrArr[i].addEventListener('change', () => {
+		activeFilters[fltrArr[i].dataset.filter] = fltrArr[i].value;
+		filter()
 	})
 }
 
