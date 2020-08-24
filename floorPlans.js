@@ -186,7 +186,6 @@ function aptFltr(apt, x) {
 }
 
 function filter() {
-	console.log(activeFilters);
 	let results = [];
 	let x = 0;
 	if(curSt == 1) {x = 800; switchState()}
@@ -239,24 +238,20 @@ function filter() {
 					"filterPass": filterPass
 				})
 			}
-			console.log(results);
 		}
 		// Update sitemap units
 		// Match lstArr[] to results[] + hide/show apts & units
 		// Match unit
 		for(let i = 0; i < lstArr.length; i++) {
 			let unitName = lstArr[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
-			console.log(unitName);
 			for(let j = 0; j < results.length; j++) {
 				if(unitName == results[j].name) {
-					console.log("" + results[j].name + " " + results[j].unitsAvailable + "");
 					// Match apts
 					let apts = lstArr[i].querySelectorAll('.res-lst-apt-div');
 					for(let k = 0; k < apts.length; k++) {
 						let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
 						for(let l = 0; l < results[j].apts.length; l++) {
 							if(aptName == ("APT " + results[j].apts[l].name + "")) {
-								console.log(aptName);
 								// Show/hide apt
 								if(!results[j].apts[l].filterPass) {aptFltr(apts[k], 0)}
 								else {aptFltr(apts[k], 1)}
