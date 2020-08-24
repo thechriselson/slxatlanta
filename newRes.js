@@ -230,24 +230,27 @@ function filter() {
 		// Match unit
 		for(let i = 0; i < lstArr.length; i++) {
 			let unitName = lstArr[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
+			console.log(unitName);
 			for(let j = 0; j < results.length; j++) {
 				if(unitName == results[j].name) {
+					console.log("" + results[j].name + " " + results[j].unitsAvailable + "");
 					// Match apts
 					let apts = lstArr[i].querySelectorAll('.res-lst-apt-div');
 					for(let k = 0; k < apts.length; k++) {
 						let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
 						for(let l = 0; l < results[j].apts.length; l++) {
 							if(aptName == ("APT " + results[j].apts[l].name + "")) {
+								console.log(aptName);
 								// Show/hide apt
 								if(!results[j].apts[l].filterPass) {aptFltr(apts[k], 0)}
 								else {aptFltr(apts[k], 1)}
 							}
 						}
 					}
-				}
 				// Show/hide unit
 				if(results[j].unitsAvailable == 0) {lstItem(lstArr[i], 0)}
 				else {lstItem(lstArr[i], 1)}
+				}
 			}
 		}
 	}, x)
