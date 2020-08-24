@@ -160,207 +160,99 @@ function lstItem(item, x, y) {
 	else if(x == 2) {lstItemExp(item, els, mxh)}
 }
 
-function aptFltr(apt, x) {
-	let maxH = "none"; let pad = "0.25rem"; let bord = "0.125rem";
-	if(x == 0) {maxH = "0rem"; pad = "0rem"; bord = "0rem"}
-	apt.style.maxHeight = maxH;
-	apt.style.paddingTop = pad;
-	apt.style.paddingBottom = pad;
-	apt.style.borderTopWidth = bord;
-}
-
-/*function filterCheck(item, unitType, units, apts) {
-	if(dataReady == true) {
-		let aptVis = [];
-		// Determine visibility of each unit of this unit type
-		for(let i = 0; i < units.length; i++) {
-			if(actvFltrs.length == 0) {aptVis[i] = true; continue}
-			// Check against each active filter
-			for(let j = 0; j < actvFltrs.length; j ++) {
-				// If no actvFltrs[j], skip
-				if(actvFltrs[j] == undefined || actvFltrs[j].length == 0) {continue}
-				let actvFltr = Number(actvFltrs[j]);
-				// Comparators
-				if(j == 0) {if(actvFltr != unitType[1]) {aptVis[i] = false; break}} // #beds
-				if(j == 1) {if(actvFltr != units[i][1]) {aptVis[i] = false; break}} // floor#
-				let hidden = false;
-				if(j == 2) {for(let k = 1; k < 3; k++) {if(actvFltr != units[i][3][k]) {hidden = true}}}
-				if(hidden == true) {aptVis[i] = false; break}  // price
-				if(j == 3) {
-					let fltrDate = actvFltrs[3].split("/");
-					let avaiDate = units[i][2].split("/");
-					let fltrYr = Number(fltrDate[2]); let avaiYr = Number(avaiDate[2]);
-					let fltrMth = Number(fltrDate[0]); let avaiMth = Number(avaiDate[0]);
-					let fltrDay = Number(fltrDate[1]); let avaiDay = Number(avaiDate[1]);
-					if(fltrYr > avaiYr) {aptVis[i] = false; break} // Year
-					else if(fltrYr < avaiYr) {}
-					else if(fltrMth > avaiMth) {aptVis[i] = false; break} // Month
-					else if(fltrMth < avaiMth) {}
-					else if(fltrDay > avaiDay) {aptVis[i] = false; break} // Day
-				}
-				// If unit passes all filters
-				aptVis[i] = true;
-			}
-		}
-		// Minimise or expand each apt + set sitemap layers' visibility
-		for(let i = 0; i < aptVis.length; i++) {
-			// Apts
-			let x = 1; if(aptVis[i] == false) {x = 0}
-			aptFltr(apts[i], x);
-			// Find matching sitemap layer
-			let layerMatch = false;
-			let mapLayer;
-			for(let j = 0; j < sitemapLayers.length; j++) {
-				if(layerMatch == true) {break}
-				for(let k = 0; k < sitemapLayers[j].length; k++) {
-					let aptNum = sitemapLayers[j][k].querySelector(".res-map-data").dataset.apt;
-					let aptTxt = apts[i].querySelector(".res-lst-apt-txt.apt").textContent;
-					if(aptTxt.includes(aptNum)) {mapLayer = sitemapLayers[j][k]; layerMatch = true; break}
-				}
-			}
-			// If match found, set visibility
-			if(layerMatch == true) {
-				if(aptVis[i] == false) {opacity0(mapLayer)}
-				else {opacity1(mapLayer)}
-			}
-		}
-		// Set list item's visibility + fallback for filter reset
-		if(aptVis.length > 0 && !aptVis.includes(true)) {item.dataset.filter = "true"}
-		else {item.dataset.filter = "false"}
-	}
-	// Pre-API filter using just unit type's #beds
-	else {
-		// #beds
-		if(Number(actvFltrs[0]) != unitType[1]) {item.dataset.filter = "true"}
-		else {item.dataset.filter = "false"}
-	}
-	// Minimise or expand list item
-	console.log(item.dataset.filter);
-	setTimeout(() => {
-		console.log(item.dataset.filter);
-		if(item.dataset.filter == "true") {lstItem(item, 0)}
-		else {lstItem(item, 1)}
-	}, 240)
-	//if(item.dataset.filter == "true") {lstItem(item, 0)}
-	//else {lstItem(item, 1)}
-}*/
-
-/*function filter() {
-	console.log(actvFltrs);
-	let x = 0;
-	if(curSt == 1) {x = 800; switchState()}
-	setTimeout(function() {
-		for(let i = 0; i < lstArr.length; i++) {
-			let tempData = lstArr[i].querySelector(".res-lst-data").dataset;
-			let tempAttrs = [tempData.name.toUpperCase(), [Number(tempData.beds)]];
-			if(dataReady == true) {
-				// Match current lstArr[i] to correct unitType[j] + filterCheck()
-				for(let j = 0; j < units.length; j++) {
-					if(units[j] == tempData.name.toUpperCase()) {filterCheck(lstArr[i], unitTypes[j], units[j], apts[j])}
-				}
-				for(let j = 0; j < units.length; j++) {
-					for(let k = 0; k < units[j].apts.length; k++) {
-						if(tempData.name == units[j].apts[k].name) {
-							filterCheck(lstArr[i], units)
-						}
-					}
-				}
-			}
-			else {filterCheck(lstArr[i], tempAttrs)}
-		}
-	changeFloor()
-	}, x)
-}*/
-
 function filter() {
 	console.log(activeFilters);
 	let results = [];
-	for(let i = 0; i < units.length; i++) {
-		results.push({
-			"name": units[i].name,
-			"unitsAvailable": 0,
-			"apts": []
-		});
-		for(let j = 0; j < units[i].apts.length; j++) {
-			// Compare apt properties to active filters + add to results[]
-			let filterPass = true;
-			let apt = units[i].apts[j];
-			for(const filter in activeFilters) {
-				if(activeFilters[filter] === false) {}
-				else if(filter == "beds" | filter == "floor") {
-					if(activeFilters[filter] != apt[filter]) {filterPass = false}
+	let x = 0;
+	if(curSt == 1) {x = 800; switchState()}
+	setTimeout(() => {
+		for(let i = 0; i < units.length; i++) {
+			results.push({
+				"name": units[i].name,
+				"unitsAvailable": 0,
+				"apts": []
+			});
+			for(let j = 0; j < units[i].apts.length; j++) {
+				// Compare apt properties to active filters + add to results[]
+				let filterPass = true;
+				let apt = units[i].apts[j];
+				for(const filter in activeFilters) {
+					if(activeFilters[filter] === false) {}
+					else if(filter == "beds" | filter == "floor") {
+						if(activeFilters[filter] != apt[filter]) {filterPass = false}
+					}
+					else if(filter == "price") {
+						let priceArr = activeFilters[filter].split('-');
+						let min = Number(priceArr[0]);
+						let max = Number(priceArr[1]);
+						if(apt[filter] < min | apt[filter] > max) {filterPass = false}
+					}
+					else if(filter == "date") {
+						// Filter date
+						let filterDateArr = activeFilters[filter].split('/');
+						let filterYear = Number(filterDateArr[2]);
+						let filterMonth = Number(filterDateArr[0]);
+						let filterDay = Number(filterDateArr[1]);
+						// Apt available date
+						let aptDateArr = apt[filter].split('/');
+						let aptYear = Number(aptDateArr[2]);
+						let aptMonth = Number(aptDateArr[0]);
+						let aptDay = Number(aptDateArr[1]);
+						// Compare
+						if(aptYear > filterYear) {filterPass = false}
+						else if(filterYear <= aptYear && aptMonth > filterMonth) {filterPass = true}
+						else if(filterYear <= aptYear && filterMonth <= aptMonth && aptDay > filterDay) {filterPass = true}
+					}
 				}
-				else if(filter == "price") {
-					let priceArr = activeFilters[filter].split('-');
-					let min = Number(priceArr[0]);
-					let max = Number(priceArr[1]);
-					if(apt[filter] < min | apt[filter] > max) {filterPass = false}
+				if(filterPass == true) {
+					units[i].apts[j].hidden = false;
+					results[i].unitsAvailable++
 				}
-				else if(filter == "date") {
-					// Filter date
-					let filterDateArr = activeFilters[filter].split('/');
-					let filterYear = Number(filterDateArr[2]);
-					let filterMonth = Number(filterDateArr[0]);
-					let filterDay = Number(filterDateArr[1]);
-					// Apt available date
-					let aptDateArr = apt[filter].split('/');
-					let aptYear = Number(aptDateArr[2]);
-					let aptMonth = Number(aptDateArr[0]);
-					let aptDay = Number(aptDateArr[1]);
-					// Compare
-					if(aptYear > filterYear) {filterPass = false}
-					else if(filterYear <= aptYear && aptMonth > filterMonth) {filterPass = true}
-					else if(filterYear <= aptYear && filterMonth <= aptMonth && aptDay > filterDay) {filterPass = true}
-				}
+				else {units[i].apts[j].hidden = true}
+				results[i].apts.push({
+					"name": apt.name,
+					"filterPass": filterPass
+				})
 			}
-			if(filterPass == true) {
-				units[i].apts[j].hidden = false;
-				results[i].unitsAvailable++
-			}
-			else {units[i].apts[j].hidden = true}
-			results[i].apts.push({
-				"name": apt.name,
-				"filterPass": filterPass
-			})
 		}
-	}
-	// Update sitemap units
-	// Match unitListings[] to results[] + hide/show apts & units
-	// Match unit
-	for(let i = 0; i < unitListings.length; i++) {
-		let unitName = unitListings[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
-		for(let j = 0; j < results.length; j++) {
-			if(unitName == results[j].name) {
-				// Match apts
-				let apts = unitListings[i].querySelectorAll('.res-lst-apt-div');
-				for(let k = 0; k < apts.length; k++) {
-					let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
-					for(let l = 0; l < results[j].apts.length; l++) {
-						if(aptName == ("APT " + results[j].apts[l].name + "")) {
-							// Show/hide apt
-							let toggle = false;
-							if(!apts[k].classList.contains('hidden') && !results[j].apts[l].filterPass) {toggle = true}
-							if(apts[k].classList.contains('hidden') && results[j].apts[l].filterPass) {toggle = true}
-							if(toggle) {apts[k].classList.toggle('hidden')}
+		// Update sitemap units
+		// Match unitListings[] to results[] + hide/show apts & units
+		// Match unit
+		for(let i = 0; i < unitListings.length; i++) {
+			let unitName = unitListings[i].querySelector('.res-lst-hdng').textContent.toUpperCase();
+			for(let j = 0; j < results.length; j++) {
+				if(unitName == results[j].name) {
+					// Match apts
+					let apts = unitListings[i].querySelectorAll('.res-lst-apt-div');
+					for(let k = 0; k < apts.length; k++) {
+						let aptName = apts[k].querySelector('.res-lst-apt-txt').textContent;
+						for(let l = 0; l < results[j].apts.length; l++) {
+							if(aptName == ("APT " + results[j].apts[l].name + "")) {
+								// Show/hide apt
+								let toggle = false;
+								if(!apts[k].classList.contains('hidden') && !results[j].apts[l].filterPass) {toggle = true}
+								if(apts[k].classList.contains('hidden') && results[j].apts[l].filterPass) {toggle = true}
+								if(toggle) {apts[k].classList.toggle('hidden')}
+							}
 						}
 					}
 				}
-			}
-			// Show/hide unit
-			let unitContH = getComputedStyle(unitListings[i]).height;
-			let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-con')).height;
-			if(results[j].unitsAvailable == 0) {
-				unitListings[i].style.maxHeight = unitContH;
-				setTimeout(() => {unitListings[i].style.maxHeight = "0px"}, 120)
-			}
-			else {
-				setTimeout(() => {
-					unitListings[i].style.maxHeight = unitH;
-					setTimeout(() => {unitListings[i].style.maxHeight = "none"}, 120)
-				}, 120)
+				// Show/hide unit
+				let unitContH = getComputedStyle(unitListings[i]).height;
+				let unitH = getComputedStyle(unitListings[i].querySelector('.res-lst-overview-con')).height;
+				if(results[j].unitsAvailable == 0) {
+					unitListings[i].style.maxHeight = unitContH;
+					setTimeout(() => {unitListings[i].style.maxHeight = "0px"}, 120)
+				}
+				else {
+					setTimeout(() => {
+						unitListings[i].style.maxHeight = unitH;
+						setTimeout(() => {unitListings[i].style.maxHeight = "none"}, 120)
+					}, 120)
+				}
 			}
 		}
-	}
+	}, x)
 }
 
 function switchState() {
@@ -390,25 +282,17 @@ function switchState() {
 	}, 800);
 }
 
-// Filter reset
-document.querySelector(".res-fltr-reset-div").addEventListener('click', function() {
+// Filter reset button
+document.querySelector('.res-fltr-reset-div').addEventListener('click', () => {
 	if(curSt == 0) {
-		// Reset filter selectors
+		// Reset filter buttons
 		for(let i = 0; i < filterBttns.length - 1; i++) {filterBttns[i].selectedIndex = 0}
 		filterBttns[3].value = "";
 		// Remove all active filters
-		activeFilters = [];
+		for(const filter in activeFilters) {activeFilters[filter] = false}
 	}
-	filter();
-});
-
-// Filter selectors
-/*for(let i = 0; i < filterBttns.length - 1; i++) {
-	filterBttns[i].addEventListener('change', function() {
-		activeFilters[i] = filterBttns[i].value;
-		filter();
-	})
-}*/
+	filter()
+})
 
 // Filter buttons
 for(let i = 0; i < filterBttns.length - 1; i++) {
@@ -421,10 +305,10 @@ for(let i = 0; i < filterBttns.length - 1; i++) {
 // List items
 for(let i = 0; i < lstArr.length; i++) {
 	// When clicked in list view
-	lstArr[i].addEventListener('click', function() {if(curSt == 0) {curIt = i; switchState()}});
+	lstArr[i].addEventListener('click', () => {if(curSt == 0) {curIt = i; switchState()}});
 	// Arrows
-	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', function() {curIt = curIt - 1; changeSlide()});
-	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', function() {curIt = curIt + 1; changeSlide()});
+	lstArr[i].querySelector(".res-lst-arrow-left").addEventListener('click', () => {curIt = curIt - 1; changeSlide()});
+	lstArr[i].querySelector(".res-lst-arrow-right").addEventListener('click', () => {curIt = curIt + 1; changeSlide()});
 }
 
 window.addEventListener('resize', () => {if(curSt == 1) {changeSlide()}});

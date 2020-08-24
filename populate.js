@@ -124,7 +124,7 @@ var getJSON = function(url, callback) {
 			populateApts();
 			if(curSt == 1) {changeSlide()}
 			dataReady = true;
-			for(let i = 0; i < fltrArr.length; i++) {fltrArr[i].disabled = false}	
+			for(let i = 0; i < filterBttns.length; i++) {filterBttns[i].disabled = false}	
 		}
 	});
     xhr.send();
