@@ -363,12 +363,14 @@ function populateApts() {
 					let newApt = aptTemplate.cloneNode(true);
 					let txtArr = newApt.querySelectorAll('.res-lst-apt-txt');
 					let mapView = newApt.querySelector(".res-lst-apt-txt-div.map");
+					let extLink = newApt.querySelector(".res-lst-apt-txt-div.lease");
 					txtArr[0].innerText = "APT " + units[j].apts[k].name;
 					txtArr[1].innerText = "Floor " + units[j].apts[k].floor;
 					txtArr[2].innerText = "Available " + units[j].apts[k].date;
 					txtArr[3].innerText = "Starting at $" + units[j].apts[k].price;
 					// Click to display on sitemap
 					mapView.addEventListener('click', () => {changeFloor(units[j].apts[k].floor)});
+					extLink.href = units[j].apts[k].link;
 					newApt.style.display = "flex";
 					aptCont.appendChild(newApt);
 					unitsAvailable++;
@@ -423,6 +425,7 @@ var getJSON = function(url, callback) {
 				let floor = Number(name.charAt(0));
 				let price = Number(jsonUnits[i].MinimumRent.split(".")[0]);
 				let date = jsonUnits[i].AvailableDate;
+				let link = jsonUnits[i].ApplyOnlineURL;
 				// Construct unit object
 				let newApt = {
 					"name": name,
@@ -430,6 +433,7 @@ var getJSON = function(url, callback) {
 					"floor": floor,
 					"price": price,
 					"date": date,
+					"link": link,
 					"hidden": false
 				}
 				// Check for existing unit type
